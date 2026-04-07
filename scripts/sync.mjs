@@ -4,6 +4,7 @@
  * sync.mjs
  * --------
  * Syncs OpenClaw GitHub Releases into index.html's CHANGELOG_DATA.
+ * Groups releases by month (monthly archive).
  *
  * Usage:
  *   GITHUB_TOKEN=ghp_xxx node scripts/sync.mjs
@@ -22,101 +23,83 @@ const INDEX_HTML = join(ROOT, 'index.html');
 const REPO = 'openclaw/openclaw';
 const API_BASE = 'https://api.github.com';
 
-// Tag mapping: keywords in release body → our tag categories
-const TAG_KEYWORDS = {
-  '新功能':  ['feat', 'feature', '新功能', 'new'],
-  '优化':    ['opt', 'perf', '优化', 'improve', '优化'],
-  '修复':    ['fix', 'bug', '修复', 'patch'],
-  'Breaking':['break', 'breaking', 'Breaking', '破坏性'],
+// Tag mapping: section headers in release body → tag categories
+const SECTION_TAGS = {
+  'Breaking': 'Breaking',
+  'Changes':  '新功能',
+  'Fixes':    '修复',
 };
 
-function detectTag(text) {
-  const lower = text.toLowerCase();
-  for (const [tag, keywords] of Object.entries(TAG_KEYWORDS)) {
-    for (const kw of keywords) {
-      if (lower.includes(kw.toLowerCase())) {
-        return tag;
-      }
-    }
-  }
-  return '新功能'; // default
+function detectTag(currentSection) {
+  return SECTION_TAGS[currentSection] || '新功能';
 }
 
 /**
- * Parse release body markdown into features array.
+ * Parse release body into features array.
  *
- * Supports common formats:
- * 1. Bullet list with bold titles:  - **Title**: detail text
- * 2. Bullet list with headings:     - ### Title
- *                                     detail text
- * 3. Plain bullet list:             - feature description
+ * OpenClaw release format:
+ *   ### Breaking
+ *   - description text
+ *   ### Changes
+ *   - description text
+ *   ### Fixes
+ *   - description text
  */
 function parseFeatures(body) {
   if (!body) return [];
 
   const features = [];
   const lines = body.split('\n');
-  let current = null;
+  let currentSection = '';
 
   for (const line of lines) {
     const trimmed = line.trim();
 
-    // Skip empty lines and markdown headers that aren't feature items
     if (!trimmed || trimmed.startsWith('<!--')) continue;
 
-    // Match: - **Title**: detail
-    const boldMatch = trimmed.match(/^[-*]\s+\*\*(.+?)\*\*\s*[:：]\s*(.*)$/);
-    if (boldMatch) {
-      current = {
-        title: boldMatch[1].trim(),
-        tag: detectTag(boldMatch[1]),
-        summary: boldMatch[2].trim().slice(0, 60),
-        detail: boldMatch[2].trim(),
-      };
-      features.push(current);
+    // Match section headers: ### Breaking, ### Changes, ### Fixes
+    const sectionMatch = trimmed.match(/^###\s+(.+)$/);
+    if (sectionMatch) {
+      currentSection = sectionMatch[1].trim();
       continue;
     }
 
-    // Match: - **Title**
-    const boldOnlyMatch = trimmed.match(/^[-*]\s+\*\*(.+?)\*\*\s*$/);
-    if (boldOnlyMatch) {
-      current = {
-        title: boldOnlyMatch[1].trim(),
-        tag: detectTag(boldOnlyMatch[1]),
-        summary: '',
-        detail: '',
-      };
-      features.push(current);
-      continue;
-    }
+    // Match bullet items: - text...
+    const bulletMatch = trimmed.match(/^[-*]\s+(.+)$/);
+    if (bulletMatch) {
+      const text = bulletMatch[1].trim();
+      // Extract title: first sentence or first clause (before : or ；)
+      const sepIdx = text.search(/[:：]/);
+      const commaIdx = text.search(/[,，]/);
+      let titleEnd = -1;
 
-    // Match: - plain text
-    const plainMatch = trimmed.match(/^[-*]\s+(.+)$/);
-    if (plainMatch) {
-      const text = plainMatch[1].trim();
-      // Use first 20 chars as title, rest as detail
-      const titleEnd = text.indexOf('，') !== -1 ? text.indexOf('，') : text.indexOf(',');
-      const sep = titleEnd > 0 && titleEnd < 30 ? titleEnd : Math.min(20, text.length);
-      current = {
-        title: text.slice(0, sep).replace(/[，,。.：:]$/, ''),
-        tag: detectTag(text),
+      if (sepIdx > 0 && sepIdx < 50) {
+        titleEnd = sepIdx;
+      } else if (commaIdx > 0 && commaIdx < 30) {
+        titleEnd = commaIdx;
+      }
+
+      const title = titleEnd > 0
+        ? text.slice(0, titleEnd).replace(/[,，.。:：]$/, '')
+        : text.slice(0, 40).replace(/[,，.。:：]$/, '');
+
+      features.push({
+        title: title.trim(),
+        tag: detectTag(currentSection),
         summary: text.slice(0, 60),
         detail: text,
-      };
-      features.push(current);
+      });
       continue;
     }
 
-    // Continuation line for current feature (indented or plain text after a bullet)
-    if (current && !trimmed.startsWith('#') && !trimmed.match(/^[-*]/)) {
-      current.detail += (current.detail ? '\n' : '') + trimmed;
-      if (!current.summary) {
-        current.summary = trimmed.slice(0, 60);
-      }
+    // Continuation line for current feature
+    if (features.length > 0 && !trimmed.startsWith('#') && !trimmed.match(/^[-*]/)) {
+      const last = features[features.length - 1];
+      last.detail += (last.detail ? '\n' : '') + trimmed;
     }
   }
 
-  // Clean up: ensure summary is set
+  // Ensure summary is set
   for (const f of features) {
     if (!f.summary) {
       f.summary = f.detail.slice(0, 60);
@@ -164,43 +147,71 @@ async function fetchReleases() {
 }
 
 function releaseToChangelogEntry(release) {
-  // Version: prefer tag_name, fallback to name
   let version = release.tag_name || release.name || '';
   if (!version.startsWith('v')) {
     version = 'v' + version;
   }
 
-  // Date: from published_at
   const date = release.published_at
     ? release.published_at.split('T')[0]
     : release.created_at?.split('T')[0] || '';
 
-  // Features from body
   const features = parseFeatures(release.body);
 
   return { version, date, features };
 }
 
-function updateIndexHtml(entries) {
-  const html = readFileSync(INDEX_HTML, 'utf-8');
+/**
+ * Group flat entries by month into the CHANGELOG_DATA format.
+ */
+function groupByMonth(entries) {
+  const monthMap = new Map();
 
-  // Find and replace the CHANGELOG_DATA array
-  const dataRegex = /const CHANGELOG_DATA\s*=\s*\[[\s\S]*?\];/;
-  const newDataStr = `const CHANGELOG_DATA = ${JSON.stringify(entries, null, 2).replace(/"(\w)":/g, '$1:')};`;
+  for (const entry of entries) {
+    const [year, month] = entry.date.split('-');
+    const monthKey = `${year}-${month}`;
+    const monthLabel = `${year} 年 ${parseInt(month)} 月`;
 
-  // Actually, we need to preserve the original format better.
-  // JSON.stringify won't preserve the exact formatting we want.
-  // Let's build the array string manually.
+    if (!monthMap.has(monthKey)) {
+      monthMap.set(monthKey, {
+        month: monthLabel,
+        monthId: monthKey,
+        releases: [],
+      });
+    }
 
-  const formattedEntries = entries.map(entry => {
-    const featuresStr = entry.features.map(f =>
-      `      {\n        title: ${JSON.stringify(f.title)},\n        tag: ${JSON.stringify(f.tag)},\n        summary: ${JSON.stringify(f.summary)},\n        detail: ${JSON.stringify(f.detail)}\n      }`
-    ).join(',\n');
+    monthMap.get(monthKey).releases.push(entry);
+  }
 
-    return `  {\n    version: ${JSON.stringify(entry.version)},\n    date: ${JSON.stringify(entry.date)},\n    features: [\n${featuresStr}\n    ]\n  }`;
+  // Sort months newest first
+  return Array.from(monthMap.values())
+    .sort((a, b) => b.monthId.localeCompare(a.monthId));
+}
+
+/**
+ * Format CHANGELOG_DATA as JS source string.
+ */
+function formatChangelogData(months) {
+  const monthStrs = months.map(month => {
+    const releaseStrs = month.releases.map(release => {
+      const featureStrs = release.features.map(f =>
+        `          { title: ${JSON.stringify(f.title)}, tag: ${JSON.stringify(f.tag)}, summary: ${JSON.stringify(f.summary)}, detail: ${JSON.stringify(f.detail)} }`
+      ).join(',\n');
+
+      return `      {\n        version: ${JSON.stringify(release.version)},\n        date: ${JSON.stringify(release.date)},\n        features: [\n${featureStrs}\n        ]\n      }`;
+    }).join(',\n');
+
+    return `  {\n    month: ${JSON.stringify(month.month)},\n    monthId: ${JSON.stringify(month.monthId)},\n    releases: [\n${releaseStrs}\n    ]\n  }`;
   }).join(',\n');
 
-  const newArray = `[\n${formattedEntries}\n]`;
+  return `[\n${monthStrs}\n]`;
+}
+
+function updateIndexHtml(months) {
+  const html = readFileSync(INDEX_HTML, 'utf-8');
+  const dataRegex = /const CHANGELOG_DATA\s*=\s*\[[\s\S]*?\];/;
+
+  const newArray = formatChangelogData(months);
   const newHtml = html.replace(dataRegex, `const CHANGELOG_DATA = ${newArray};`);
 
   if (newHtml === html) {
@@ -219,23 +230,17 @@ async function main() {
     const releases = await fetchReleases();
     console.log(`Found ${releases.length} releases.\n`);
 
-    // Filter out drafts and prereleases (optional)
     const published = releases.filter(r => !r.draft && !r.prerelease);
     console.log(`${published.length} published releases.\n`);
 
-    // Convert to changelog entries
     const entries = published
       .map(releaseToChangelogEntry)
-      .filter(e => e.features.length > 0) // skip releases with no parseable features
-      .sort((a, b) => b.version.localeCompare(a.version)); // newest first
+      .filter(e => e.features.length > 0)
+      .sort((a, b) => b.version.localeCompare(a.version));
 
     console.log(`${entries.length} releases with parseable features:\n`);
     for (const e of entries) {
       console.log(`  ${e.version} (${e.date}) — ${e.features.length} features`);
-      for (const f of e.features) {
-        console.log(`    [${f.tag}] ${f.title}: ${f.summary}`);
-      }
-      console.log();
     }
 
     if (entries.length === 0) {
@@ -243,11 +248,17 @@ async function main() {
       process.exit(0);
     }
 
-    const changed = updateIndexHtml(entries);
+    const months = groupByMonth(entries);
+    console.log(`\nGrouped into ${months.length} months:\n`);
+    for (const m of months) {
+      console.log(`  ${m.month}: ${m.releases.length} releases`);
+    }
+
+    const changed = updateIndexHtml(months);
     if (changed) {
-      console.log('index.html updated successfully.');
+      console.log('\nindex.html updated successfully.');
     } else {
-      console.log('No changes needed.');
+      console.log('\nNo changes needed.');
     }
   } catch (err) {
     console.error('Error:', err.message);
