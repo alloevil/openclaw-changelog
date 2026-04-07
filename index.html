@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenLaw Changelog</title>
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: #16161f;
+  --bg-hover: #1c1c28;
+  --bg-detail: #1a1a25;
+  --border: #232333;
+  --border-light: #2a2a3d;
+  --text-primary: #e8e8ed;
+  --text-secondary: #8b8ba0;
+  --text-muted: #5c5c72;
+  --accent: #6c5ce7;
+  --accent-glow: rgba(108, 92, 231, 0.15);
+  --tag-new: #00d68f;
+  --tag-new-bg: rgba(0, 214, 143, 0.12);
+  --tag-opt: #4da6ff;
+  --tag-opt-bg: rgba(77, 166, 255, 0.12);
+  --tag-fix: #ff9f43;
+  --tag-fix-bg: rgba(255, 159, 67, 0.12);
+  --tag-break: #ff6b6b;
+  --tag-break-bg: rgba(255, 107, 107, 0.12);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --transition: 0.2s ease;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== Header ========== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 10, 15, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -1px;
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.logo-text span {
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+/* Month nav pills */
+.month-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.month-pill {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.month-pill:hover {
+  color: var(--text-primary);
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+
+/* ========== Main Layout ========== */
+.main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 24px 120px;
+}
+
+/* ========== Hero ========== */
+.hero {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.hero h1 {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #e8e8ed, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ========== Month Section ========== */
+.month-section {
+  margin-bottom: 72px;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.month-section:nth-child(2) { animation-delay: 0.1s; }
+.month-section:nth-child(3) { animation-delay: 0.2s; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.month-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.month-tag {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.month-count {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ========== Release Subsection ========== */
+.release-sub {
+  margin-bottom: 32px;
+}
+
+.release-sub-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.release-version {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.release-date {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ========== Feature Card ========== */
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all var(--transition);
+  overflow: hidden;
+}
+
+.feature-card:hover {
+  border-color: var(--border-light);
+  background: var(--bg-hover);
+}
+
+.feature-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.feature-header:hover { background: rgba(255,255,255,0.015); }
+
+.expand-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: transform 0.25s ease;
+  font-size: 12px;
+}
+
+.feature-card.open .expand-icon {
+  transform: rotate(90deg);
+}
+
+.feature-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.tag-new     { color: var(--tag-new);   background: var(--tag-new-bg); }
+.tag-opt     { color: var(--tag-opt);   background: var(--tag-opt-bg); }
+.tag-fix     { color: var(--tag-fix);   background: var(--tag-fix-bg); }
+.tag-break   { color: var(--tag-break); background: var(--tag-break-bg); }
+
+.feature-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+}
+
+.feature-summary {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-left: auto;
+  flex-shrink: 0;
+  max-width: 45%;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.feature-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.25s ease;
+}
+
+.feature-card.open .feature-detail {
+  max-height: 500px;
+}
+
+.feature-detail-inner {
+  padding: 0 20px 18px 52px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* ========== Footer ========== */
+.footer {
+  text-align: center;
+  padding: 40px 24px;
+  color: var(--text-muted);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+}
+
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.footer a:hover { text-decoration: underline; }
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .header-inner {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .version-nav {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  .hero h1 { font-size: 28px; }
+  .hero p { font-size: 15px; }
+  .version-tag { font-size: 22px; }
+  .feature-summary {
+    display: none;
+  }
+  .feature-header {
+    padding: 14px 16px;
+  }
+  .feature-detail-inner {
+    padding-left: 48px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main { padding: 32px 16px 80px; }
+  .feature-title { font-size: 14px; }
+}
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <div class="logo-icon">OL</div>
+      <div class="logo-text">OpenLaw <span>Changelog</span></div>
+    </div>
+    <nav class="month-nav" id="monthNav"></nav>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="main">
+  <div class="hero">
+    <h1>What's New</h1>
+    <p>OpenLaw 的每一次进化，都在这里记录。新功能、优化与重要变更。</p>
+  </div>
+  <div id="changelog"></div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  Synced from <a href="https://github.com/openclaw/openclaw" target="_blank">OpenClaw</a> · OpenLaw Changelog
+</footer>
+
+<!-- ========== DATA (synced from OpenClaw releases) ========== -->
+<script>
+/**
+ * Changelog Data (Monthly Archive)
+ * ─────────────────────────────────
+ * Auto-synced from OpenClaw GitHub Releases.
+ * Grouped by month. Each month contains multiple releases.
+ */
+const CHANGELOG_DATA = [
+  {
+    month: "2026 年 4 月",
+    monthId: "2026-04",
+    releases: [
+      {
+        version: "v2026.4.6",
+        date: "2026-04-06",
+        features: [
+          { title: "视频生成", tag: "新功能", summary: "对 Agent 说话即可生成视频", detail: "内置 video_generate 工具，支持 xAI Grok、阿里通义万相、Runway 三个提供商。只需对 Agent 描述你想要的视频内容，即可自动选择合适的提供商完成生成，无需手动配置。" },
+          { title: "音乐生成", tag: "新功能", summary: "异步任务追踪自动交付", detail: "内置 music_generate 工具，支持 Google Lyria、MiniMax、ComfyUI 工作流。采用异步任务追踪机制，提交生成请求后 Agent 会自动追踪进度并在完成时交付结果。" },
+          { title: "记忆做梦机制", tag: "新功能", summary: "三阶段自动整理记忆", detail: "实验性 Memory Dreaming 功能。模拟人类睡眠的三个阶段——浅睡（整理短期记忆）、深睡（归纳模式与知识）、REM（创造性联想），自动整理 Agent 记忆。结果写入 dreams.md，可通过 /dreaming 命令查看。" },
+          { title: "新增模型提供商", tag: "新功能", summary: "6+ 新提供商接入", detail: "新增支持 Qwen、Fireworks AI、StepFun、MiniMax TTS/搜索、Ollama Web Search、Amazon Bedrock Mantle 等多个模型提供商。" },
+          { title: "ComfyUI 工作流集成", tag: "新功能", summary: "本地 + 云端多媒体生成", detail: "集成本地 ComfyUI 与 Comfy Cloud，支持通过自定义工作流实现图片、视频、音乐生成等多媒体创作能力。" },
+          { title: "控制台 12 语言", tag: "新功能", summary: "12 种语言界面支持", detail: "控制台现已支持简体中文、繁体中文、日语、韩语、法语、德语、西班牙语、葡萄牙语等 12 种语言界面。" },
+          { title: "ClawHub 一键安装", tag: "新功能", summary: "Skills 面板直接安装技能", detail: "在 Skills 面板内直接搜索、查看社区技能详情并一键安装。" },
+          { title: "iOS 命令审批", tag: "新功能", summary: "iPhone 推送通知审批", detail: "Agent 执行敏感命令时，会通过 iPhone 推送通知请求审批。用户可以在手机上直接批准或拒绝。" },
+          { title: "Prompt 缓存优化", tag: "优化", summary: "显著降低 API 调用成本", detail: "通过三项关键优化提升 Prompt 缓存命中率：工具排序确定化、提示词指纹归一化、移除重复注入。" },
+          { title: "上下文可见性控制", tag: "新功能", summary: "精确控制群聊消息传递", detail: "新增 contextVisibility 配置项，支持三种模式：all、allowlist、allowlist_quote，精确控制 Agent 在群聊中接收哪些消息。" },
+          { title: "Claude CLI 集成增强", tag: "优化", summary: "MCP bridge 暴露工具给 Claude CLI", detail: "通过 loopback MCP bridge 将工具集暴露给 Claude CLI，支持 stdin 输入和 stream-json 流式输出。" }
+        ]
+      },
+      {
+        version: "v2026.4.2",
+        date: "2026-04-02",
+        features: [
+          { title: "Task Flow 任务编排", tag: "新功能", summary: "持久化多步骤任务流", detail: "全新的 Task Flow 任务编排引擎。支持持久化多步骤任务流、实时状态跟踪、自动子任务生成与级联取消。" },
+          { title: "xAI 搜索插件化", tag: "Breaking", summary: "配置路径迁移", detail: "x_search 配置已迁移到 plugins.entries.xai.config 路径。" },
+          { title: "Firecrawl 插件化", tag: "Breaking", summary: "配置路径迁移", detail: "web_fetch 中的 Firecrawl 配置已迁移到 plugins.entries.firecrawl.config 路径。" }
+        ]
+      }
+    ]
+  },
+  {
+    month: "2026 年 3 月",
+    monthId: "2026-03",
+    releases: [
+      {
+        version: "v2026.3.31",
+        date: "2026-03-31",
+        features: [
+          { title: "QQ Bot 渠道支持", tag: "新功能", summary: "多账号、斜杠命令、媒体收发", detail: "新增 QQ Bot 作为内置渠道插件，支持多账号设置、SecretRef 凭证、斜杠命令、提醒和媒体收发。" },
+          { title: "Background Tasks 统一控制面", tag: "新功能", summary: "SQLite 后台任务管理", detail: "将 ACP、子 Agent、cron 和后台 CLI 执行统一到一个 SQLite 后台任务管理面板。新增 openclaw flows 命令。" },
+          { title: "LINE 媒体发送", tag: "新功能", summary: "图片/视频/音频出站发送", detail: "LINE 渠道新增图片、视频和音频的出站发送能力。" },
+          { title: "Matrix 流式回复", tag: "新功能", summary: "消息原地更新替代新建", detail: "Matrix 渠道新增草稿流式回复，部分内容在同一消息上原地更新。" },
+          { title: "Slack 命令审批", tag: "新功能", summary: "原生 Slack 审批流程", detail: "新增原生 Slack 审批路由和审批者授权，执行审批提示可以留在 Slack 中。" },
+          { title: "WhatsApp 表情回复", tag: "新功能", summary: "Agent 用 emoji 回应消息", detail: "Agent 现在可以对 WhatsApp 消息进行表情回复，让互动更自然。" },
+          { title: "Plugin SDK 破坏性变更", tag: "Breaking", summary: "旧兼容路径即将移除", detail: "Plugin SDK 废弃旧的 provider 兼容子路径，当前 openclaw/plugin-sdk/* 是唯一的前向路径。" },
+          { title: "安全加固", tag: "修复", summary: "exec 环境变量隔离", detail: "阻止代理、TLS、Docker 端点和 Python 包索引等环境变量在宿主机执行中被覆盖。" }
+        ]
+      },
+      {
+        version: "v2026.3.28",
+        date: "2026-03-29",
+        features: [
+          { title: "xAI 迁移到 Responses API", tag: "优化", summary: "原生 x_search 集成", detail: "xAI 内置提供商迁移到 Responses API，新增原生 x_search 工具，自动启用 Grok 搜索流。" },
+          { title: "MiniMax 图片生成", tag: "新功能", summary: "image-01 模型支持", detail: "新增 MiniMax 图片生成提供商 image-01，支持生成和图生图编辑，可控制宽高比。" },
+          { title: "插件审批钩子", tag: "新功能", summary: "before_tool_call 需用户批准", detail: "插件 before_tool_call 钩子新增异步 requireApproval，可暂停工具执行并提示用户批准。" },
+          { title: "Claude/Codex/Gemini CLI 后端", tag: "新功能", summary: "三大 CLI 后端插件化", detail: "将 Claude CLI、Codex CLI 和 Gemini CLI 推理默认移到插件面，新增 Gemini CLI 后端支持。" },
+          { title: "Qwen 认证迁移", tag: "Breaking", summary: "Model Studio 替代 portal", detail: "移除已废弃的 qwen-portal-auth OAuth 集成，请迁移到 Model Studio。" }
+        ]
+      },
+      {
+        version: "v2026.3.24",
+        date: "2026-03-25",
+        features: [
+          { title: "OpenAI 兼容性增强", tag: "新功能", summary: "新增 /v1/models 和 /v1/embeddings", detail: "网关新增 /v1/models 和 /v1/embeddings 端点，兼容更多客户端和 RAG 框架。" },
+          { title: "Microsoft Teams 官方 SDK", tag: "新功能", summary: "流式回复、欢迎卡片", detail: "迁移到 Teams 官方 SDK，新增流式 1:1 回复、欢迎卡片、反馈/反思和打字指示器。" },
+          { title: "Skills 一键安装", tag: "新功能", summary: "内置技能安装配方", detail: "为内置技能添加一键安装配方，控制面板新增状态过滤标签。" },
+          { title: "Discord 自动生成线程名", tag: "新功能", summary: "LLM 生成简洁线程标题", detail: "Discord 自动线程新增 LLM 异步生成简洁标题模式。" }
+        ]
+      },
+      {
+        version: "v2026.3.22",
+        date: "2026-03-23",
+        features: [
+          { title: "ClawHub 原生安装", tag: "新功能", summary: "skills search|install|update", detail: "新增 openclaw skills search|install|update 原生命令和 clawhub:<package> 安装支持。" },
+          { title: "插件市场", tag: "新功能", summary: "Claude marketplace 集成", detail: "新增 Claude marketplace 注册表解析、plugin@marketplace 安装和更新支持。" },
+          { title: "沙箱可插拔后端", tag: "新功能", summary: "OpenShell + SSH 沙箱", detail: "新增可插拔沙箱后端，提供 OpenShell 和 SSH 沙箱后端。" },
+          { title: "搜索提供商丰富化", tag: "新功能", summary: "Exa/Tavily/Firecrawl 内置", detail: "新增 Exa、Tavily 和 Firecrawl 作为内置搜索插件。" },
+          { title: "Anthropic Vertex 支持", tag: "新功能", summary: "通过 Vertex AI 使用 Claude", detail: "新增 anthropic-vertex 核心提供商，支持通过 Google Vertex AI 使用 Claude。" },
+          { title: "Plugin SDK 迁移", tag: "Breaking", summary: "openclaw/extension-api 已移除", detail: "新公共插件 SDK 路径为 openclaw/plugin-sdk/*，旧 API 已移除无兼容层。" },
+          { title: "Matrix 新插件", tag: "Breaking", summary: "基于官方 matrix-js-sdk", detail: "新增基于官方 matrix-js-sdk 的 Matrix 插件，旧版需迁移。" },
+          { title: "Browser Chrome MCP 简化", tag: "Breaking", summary: "移除旧版扩展中继", detail: "移除旧版 Chrome 扩展中继路径，运行 openclaw doctor --fix 迁移配置。" }
+        ]
+      },
+      {
+        version: "v2026.3.13",
+        date: "2026-03-14",
+        features: [
+          { title: "Agent 状态管理", tag: "新功能", summary: "持久化 Agent 状态", detail: "新增 Agent 状态持久化机制，支持跨重启恢复 Agent 运行状态和工具调用进度。" },
+          { title: "控制面板体验优化", tag: "优化", summary: "UI 交互和可访问性", detail: "改进控制面板 UI 组件样式、可访问性和响应式布局。" }
+        ]
+      },
+      {
+        version: "v2026.3.12",
+        date: "2026-03-13",
+        features: [
+          { title: "Agent 降温策略", tag: "优化", summary: "按模型粒度的限速冷却", detail: "限速冷却改为按模型粒度，一个模型的 429 不再阻断其他模型。冷却时间改为阶梯式 30s/1min/5min。" },
+          { title: "Webhook 安全加固", tag: "修复", summary: "请求验证和频率限制", detail: "加强对入站 webhook 请求的验证，拒绝缺少签名头部的请求。" }
+        ]
+      },
+      {
+        version: "v2026.3.11",
+        date: "2026-03-12",
+        features: [
+          { title: "模型提供商扩展", tag: "新功能", summary: "新增多个提供商支持", detail: "扩展模型提供商生态，新增多家 AI 提供商的集成支持。" },
+          { title: "渠道稳定性修复", tag: "修复", summary: "多渠道并发和重连", detail: "修复 Discord、Telegram、WhatsApp 等多个渠道的并发处理和重连逻辑问题。" }
+        ]
+      },
+      {
+        version: "v2026.3.8",
+        date: "2026-03-09",
+        features: [
+          { title: "多渠道消息路由", tag: "优化", summary: "改进消息分发和线程管理", detail: "优化多渠道消息路由机制，改进线程会话隔离和 DM 路由。" },
+          { title: "配置管理改进", tag: "修复", summary: "配置验证和迁移", detail: "改进配置文件的严格验证、SecretRef 解析和旧配置自动迁移。" }
+        ]
+      }
+    ]
+  }
+];
+</script>
+
+<!-- ========== RENDER ENGINE ========== -->
+<script>
+(function() {
+  const TAG_MAP = {
+    '新功能':  { cls: 'tag-new',   label: '新功能' },
+    '优化':    { cls: 'tag-opt',   label: '优化' },
+    '修复':    { cls: 'tag-fix',   label: '修复' },
+    'Breaking':{ cls: 'tag-break', label: 'BREAKING' }
+  };
+
+  function renderNav() {
+    const nav = document.getElementById('monthNav');
+    nav.innerHTML = CHANGELOG_DATA.map(m =>
+      `<a class="month-pill" href="#${m.monthId}">${m.month}</a>`
+    ).join('');
+  }
+
+  function renderFeatureCard(f, i) {
+    const tag = TAG_MAP[f.tag] || TAG_MAP['新功能'];
+    return `
+      <div class="feature-card" data-index="${i}">
+        <div class="feature-header" onclick="toggleCard(this)">
+          <span class="expand-icon">▶</span>
+          <span class="feature-tag ${tag.cls}">${tag.label}</span>
+          <span class="feature-title">${esc(f.title)}</span>
+          <span class="feature-summary">${esc(f.summary)}</span>
+        </div>
+        <div class="feature-detail">
+          <div class="feature-detail-inner">${esc(f.detail)}</div>
+        </div>
+      </div>`;
+  }
+
+  function renderChangelog() {
+    const container = document.getElementById('changelog');
+    container.innerHTML = CHANGELOG_DATA.map(month => {
+      const releaseCount = month.releases.reduce((sum, r) => sum + r.features.length, 0);
+
+      const releasesHtml = month.releases.map(release => {
+        const features = release.features.map((f, i) => renderFeatureCard(f, i)).join('');
+        return `
+          <div class="release-sub" id="${release.version}">
+            <div class="release-sub-header">
+              <span class="release-version">${esc(release.version)}</span>
+              <span class="release-date">${esc(release.date)}</span>
+            </div>
+            <div class="feature-list">${features}</div>
+          </div>`;
+      }).join('');
+
+      return `
+        <section class="month-section" id="${month.monthId}">
+          <div class="month-header">
+            <span class="month-tag">${esc(month.month)}</span>
+            <span class="month-count">${month.releases.length} 个版本 · ${releaseCount} 项变更</span>
+          </div>
+          ${releasesHtml}
+        </section>`;
+    }).join('');
+  }
+
+  function esc(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  window.toggleCard = function(header) {
+    const card = header.parentElement;
+    card.classList.toggle('open');
+  };
+
+  // Init
+  renderNav();
+  renderChangelog();
+
+  // Intersection observer for fade-in
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.feature-card').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(12px)';
+      card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      observer.observe(card);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
