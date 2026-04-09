@@ -14,6 +14,8 @@
 
 **https://alloevil.github.io/openclaw-changelog/**
 
+![Changelog Screenshot](assets/screenshot.png)
+
 ## 功能
 
 - 从 OpenClaw GitHub Releases 自动同步
