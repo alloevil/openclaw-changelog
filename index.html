@@ -416,6 +416,21 @@ const CHANGELOG_DATA = [
     monthId: "2026-04",
     releases: [
       {
+        version: "v2026.4.15",
+        date: "2026-04-16",
+        features: [
+          { title: "默认模型升级到 Claude Opus 4.7", tag: "新功能", summary: "Anthropic 默认选择全面升级", detail: "Anthropic 默认选择、opus 别名、Claude CLI 默认和内置图片理解全面升级到 Claude Opus 4.7。" },
+          { title: "Google Gemini TTS", tag: "新功能", summary: "Gemini 文字转语音支持", detail: "Google 插件新增 Gemini 文字转语音支持，包含提供商注册、语音选择、WAV 回复输出、PCM 电话输出和设置/文档指南。" },
+          { title: "模型认证状态面板", tag: "新功能", summary: "概览页显示 OAuth 令牌和限速状态", detail: "Control UI 概览新增模型认证状态卡片，显示 OAuth 令牌健康状态和提供商限速压力，令牌即将过期或已过期时有醒目的提示。" },
+          { title: "LanceDB 云端存储", tag: "新功能", summary: "持久记忆索引支持远程对象存储", detail: "memory-lancedb 新增云存储支持，持久记忆索引可以运行在远程对象存储上，不再仅限本地磁盘。" },
+          { title: "GitHub Copilot 记忆搜索", tag: "新功能", summary: "Copilot 嵌入提供商用于记忆搜索", detail: "新增 GitHub Copilot 嵌入提供商用于记忆搜索，暴露专用的 Copilot 嵌入主机帮助器，插件可复用传输层。" },
+          { title: "本地模型轻量模式", tag: "新功能", summary: "精简默认工具减小提示大小", detail: "新增实验性 localModelLean 配置，为较弱的本地模型设置移除 browser、cron 和 message 等重量级默认工具，减小提示大小。" },
+          { title: "打包体积优化", tag: "优化", summary: "发布构建更精简", detail: "本地化插件运行时依赖、裁剪发布文档载荷、收紧安装/包管理器守卫，发布构建更精简，核心不再承载扩展的运行时负担。" },
+          { title: "客户端工具名冲突拦截", tag: "修复", summary: "防止客户端工具冒充内置工具", detail: "锚定受信任的本地 MEDIA: 工具结果直通到精确的内置工具名称，拒绝与内置工具或其他客户端工具名称规范化冲突的客户端工具定义（400 错误），防止客户端工具继承本地媒体信任。" },
+          { title: "Docker 构建兼容 pnpm v10+", tag: "修复", summary: "原生绑定检测不再依赖硬编码路径", detail: "用 find 在 node_modules 下验证 matrix-sdk-crypto-nodejs 原生绑定，不再依赖硬编码的 .pnpm/... 路径，pnpm v10+ 虚拟存储布局不再导致镜像构建失败。" }
+        ]
+      },
+      {
         version: "v2026.4.14",
         date: "2026-04-14",
         features: [
