@@ -7979,11 +7979,11 @@ const CHANGELOG_DATA = [
           return `
             <div class="category-group">
               <div class="category-header" onclick="toggleCategory(this)">
-                <span class="toggle-icon">▶</span>
+                <span class="toggle-icon${dIdx === 0 ? ' expanded' : ''}">▶</span>
                 <span class="category-label ${tag.cls}">${tag.label}</span>
                 <span class="category-count">${feats.length} 项</span>
               </div>
-              <div class="category-features">
+              <div class="category-features${dIdx === 0 ? ' expanded' : ''}">
                 ${feats.map((f, i) => renderFeatureCard(f, i)).join('')}
               </div>
             </div>`;
@@ -7992,11 +7992,11 @@ const CHANGELOG_DATA = [
       return `
         <div class="date-group">
           <div class="date-header" onclick="toggleDate(this)">
-            <span class="toggle-icon">▶</span>
+            <span class="toggle-icon${dIdx === 0 ? ' expanded' : ''}">▶</span>
             <span class="date-label">${esc(date)}</span>
             <span class="date-count">${versionList} · ${totalFeatures} 项变更</span>
           </div>
-          <div class="date-releases">
+          <div class="date-releases${dIdx === 0 ? ' expanded' : ''}">
             ${catsHtml}
           </div>
         </div>`;
