@@ -456,6 +456,101 @@ body {
   color: var(--text-secondary);
 }
 
+/* ========== Component Groups ========== */
+.component-group {
+  margin-bottom: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.component-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  user-select: none;
+  background: rgba(255,255,255,0.015);
+  border-bottom: 1px solid transparent;
+}
+.component-header:hover {
+  background: rgba(255,255,255,0.03);
+}
+.component-header .toggle-icon {
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.component-header .toggle-icon.expanded {
+  transform: rotate(90deg);
+}
+.component-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+}
+.component-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+.component-items {
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  opacity: 0;
+}
+.component-items.expanded {
+  max-height: none;
+  opacity: 1;
+}
+
+/* ========== Compact Feature Item ========== */
+.feature-compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.feature-compact:last-child {
+  border-bottom: none;
+}
+.feature-compact:hover {
+  background: rgba(255,255,255,0.015);
+}
+.feature-compact-title {
+  font-size: 14px;
+  color: var(--text-secondary);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.feature-compact-detail {
+  display: none;
+  width: 100%;
+  padding-top: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.feature-compact.open {
+  flex-wrap: wrap;
+}
+.feature-compact.open .feature-compact-detail {
+  display: block;
+}
+
 /* ========== Footer ========== */
 .footer {
   text-align: center;
@@ -7939,6 +8034,66 @@ const CHANGELOG_DATA = [
       </div>`;
   }
 
+  /**
+   * Extract component prefix from title.
+   * e.g. "Codex:" → "Codex", "Channels/QQBot:" → "Channels/QQBot",
+   * "Reliability fixes cover Telegram" → null
+   */
+  function extractComponent(title) {
+    const m = title.match(/^([A-Za-z][\w/.-]*?)\s*[:：]\s/);
+    return m ? m[1] : null;
+  }
+
+  /**
+   * Group features by component prefix, return HTML.
+   * Each group is a collapsible section with a compact feature list.
+   */
+  function renderFeatureGroups(feats, dIdx) {
+    // Group by component prefix
+    const groups = new Map();
+    for (const f of feats) {
+      const comp = extractComponent(f.title) || 'Other';
+      if (!groups.has(comp)) groups.set(comp, []);
+      groups.get(comp).push(f);
+    }
+
+    // Single component with few features: render directly as compact list
+    if (groups.size <= 1 && feats.length <= 3) {
+      return feats.map(f => {
+        const tag = TAG_MAP[f.tag] || TAG_MAP['新功能'];
+        return `<div class="feature-compact" onclick="this.classList.toggle('open')">
+          <span class="feature-tag ${tag.cls}" style="font-size:10px">${tag.label}</span>
+          <span class="feature-compact-title">${esc(f.title)}</span>
+          <div class="feature-compact-detail">${esc(f.detail)}</div>
+        </div>`;
+      }).join('');
+    }
+
+    // Multiple groups: render each as collapsible
+    const expanded = dIdx === 0;
+    return Array.from(groups.entries()).map(([comp, items]) => {
+      const itemsHtml = items.map(f => {
+        const tag = TAG_MAP[f.tag] || TAG_MAP['新功能'];
+        return `<div class="feature-compact" onclick="this.classList.toggle('open')">
+          <span class="feature-tag ${tag.cls}" style="font-size:10px">${tag.label}</span>
+          <span class="feature-compact-title">${esc(f.title)}</span>
+          <div class="feature-compact-detail">${esc(f.detail)}</div>
+        </div>`;
+      }).join('');
+
+      return `<div class="component-group">
+        <div class="component-header" onclick="toggleComponent(this)">
+          <span class="toggle-icon${expanded ? ' expanded' : ''}">▶</span>
+          <span class="component-name">${esc(comp)}</span>
+          <span class="component-count">${items.length}</span>
+        </div>
+        <div class="component-items${expanded ? ' expanded' : ''}">
+          ${itemsHtml}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
   // --- Main renderer (single month) ---
   function renderMonth() {
     const container = document.getElementById('changelog');
@@ -7984,7 +8139,7 @@ const CHANGELOG_DATA = [
                 <span class="category-count">${feats.length} 项</span>
               </div>
               <div class="category-features${dIdx === 0 ? ' expanded' : ''}">
-                ${feats.map((f, i) => renderFeatureCard(f, i)).join('')}
+                ${renderFeatureGroups(feats, dIdx)}
               </div>
             </div>`;
         }).join('');
@@ -8027,6 +8182,13 @@ const CHANGELOG_DATA = [
   };
 
   window.toggleCategory = function(header) {
+    const content = header.nextElementSibling;
+    const icon = header.querySelector('.toggle-icon');
+    content.classList.toggle('expanded');
+    icon.classList.toggle('expanded');
+  };
+
+  window.toggleComponent = function(header) {
     const content = header.nextElementSibling;
     const icon = header.querySelector('.toggle-icon');
     content.classList.toggle('expanded');
