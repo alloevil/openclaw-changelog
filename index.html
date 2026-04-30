@@ -204,6 +204,117 @@ body {
   opacity: 1;
 }
 
+/* Month pills */
+.month-pill.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* Date group */
+.date-group {
+  margin-bottom: 32px;
+}
+
+.date-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px dashed var(--border);
+  margin-bottom: 16px;
+}
+
+.date-header:hover { opacity: 0.85; }
+
+.date-header .toggle-icon {
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.date-header .toggle-icon.expanded {
+  transform: rotate(90deg);
+}
+
+.date-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.date-count {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.date-releases {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  opacity: 0;
+}
+
+.date-releases.expanded {
+  max-height: none;
+  opacity: 1;
+}
+
+/* Category group */
+.category-group {
+  margin-bottom: 20px;
+  margin-left: 8px;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.category-header:hover { opacity: 0.85; }
+
+.category-header .toggle-icon {
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.category-header .toggle-icon.expanded {
+  transform: rotate(90deg);
+}
+
+.category-label {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 4px;
+}
+
+.category-count {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.category-features {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  opacity: 0;
+}
+
+.category-features.expanded {
+  max-height: none;
+  opacity: 1;
+}
+
 .month-tag {
   font-size: 28px;
   font-weight: 700;
@@ -7785,13 +7896,33 @@ const CHANGELOG_DATA = [
     'Breaking':{ cls: 'tag-break', label: 'BREAKING' }
   };
 
+  // Category order for display
+  const CAT_ORDER = ['Breaking', '新功能', '修复'];
+  const CAT_LABELS = { '新功能': '新功能', '修复': '修复', 'Breaking': 'Breaking' };
+
+  let currentMonthIdx = 0;
+
+  function esc(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // --- Nav ---
   function renderNav() {
     const nav = document.getElementById('monthNav');
-    nav.innerHTML = CHANGELOG_DATA.map(m =>
-      `<a class="month-pill" href="#${m.monthId}">${m.month}</a>`
+    nav.innerHTML = CHANGELOG_DATA.map((m, i) =>
+      `<a class="month-pill${i === currentMonthIdx ? ' active' : ''}" data-month="${i}" onclick="switchMonth(${i})">${m.month}</a>`
     ).join('');
   }
 
+  window.switchMonth = function(idx) {
+    currentMonthIdx = idx;
+    renderNav();
+    renderMonth();
+  };
+
+  // --- Feature card ---
   function renderFeatureCard(f, i) {
     const tag = TAG_MAP[f.tag] || TAG_MAP['新功能'];
     return `
@@ -7808,81 +7939,103 @@ const CHANGELOG_DATA = [
       </div>`;
   }
 
-  function renderChangelog() {
+  // --- Main renderer (single month) ---
+  function renderMonth() {
     const container = document.getElementById('changelog');
-    container.innerHTML = CHANGELOG_DATA.map((month, idx) => {
-      const releaseCount = month.releases.reduce((sum, r) => sum + r.features.length, 0);
+    const month = CHANGELOG_DATA[currentMonthIdx];
+    if (!month) { container.innerHTML = ''; return; }
 
-      const releasesHtml = month.releases.map(release => {
-        const features = release.features.map((f, i) => renderFeatureCard(f, i)).join('');
-        return `
-          <div class="release-sub" id="${release.version}">
-            <div class="release-sub-header">
-              <span class="release-version">${esc(release.version)}</span>
-              <span class="release-date">${esc(release.date)}</span>
-            </div>
-            <div class="feature-list">${features}</div>
-          </div>`;
-      }).join('');
+    const releaseCount = month.releases.reduce((sum, r) => sum + r.features.length, 0);
 
-      const isExpanded = idx === 0;
+    // Group releases by date
+    const dateMap = new Map();
+    for (const r of month.releases) {
+      if (!dateMap.has(r.date)) dateMap.set(r.date, []);
+      dateMap.get(r.date).push(r);
+    }
+    // Sort dates descending
+    const dates = Array.from(dateMap.keys()).sort((a, b) => b.localeCompare(a));
+
+    const datesHtml = dates.map((date, dIdx) => {
+      const releases = dateMap.get(date);
+      const totalFeatures = releases.reduce((s, r) => s + r.features.length, 0);
+      const versionList = releases.map(r => r.version).join(', ');
+
+      // Group features by category across all releases for this date
+      const catMap = new Map();
+      for (const r of releases) {
+        for (const f of r.features) {
+          const cat = f.tag || '新功能';
+          if (!catMap.has(cat)) catMap.set(cat, []);
+          catMap.get(cat).push(f);
+        }
+      }
+
+      const catsHtml = CAT_ORDER
+        .filter(cat => catMap.has(cat))
+        .map((cat, cIdx) => {
+          const feats = catMap.get(cat);
+          const tag = TAG_MAP[cat] || TAG_MAP['新功能'];
+          return `
+            <div class="category-group">
+              <div class="category-header" onclick="toggleCategory(this)">
+                <span class="toggle-icon">▶</span>
+                <span class="category-label ${tag.cls}">${tag.label}</span>
+                <span class="category-count">${feats.length} 项</span>
+              </div>
+              <div class="category-features">
+                ${feats.map((f, i) => renderFeatureCard(f, i)).join('')}
+              </div>
+            </div>`;
+        }).join('');
 
       return `
-        <section class="month-section" id="${month.monthId}">
-          <div class="month-header" onclick="toggleMonth(this)">
-            <span class="toggle-icon ${isExpanded ? 'expanded' : ''}">▶</span>
-            <span class="month-tag">${esc(month.month)}</span>
-            <span class="month-count">${month.releases.length} 个版本 · ${releaseCount} 项变更</span>
+        <div class="date-group">
+          <div class="date-header" onclick="toggleDate(this)">
+            <span class="toggle-icon">▶</span>
+            <span class="date-label">${esc(date)}</span>
+            <span class="date-count">${versionList} · ${totalFeatures} 项变更</span>
           </div>
-          <div class="month-content ${isExpanded ? 'expanded' : ''}">
-            ${releasesHtml}
+          <div class="date-releases">
+            ${catsHtml}
           </div>
-        </section>`;
+        </div>`;
     }).join('');
+
+    container.innerHTML = `
+      <section class="month-section" id="${month.monthId}">
+        <div class="month-header">
+          <span class="month-tag">${esc(month.month)}</span>
+          <span class="month-count">${month.releases.length} 个版本 · ${releaseCount} 项变更</span>
+        </div>
+        <div class="month-content expanded">
+          ${datesHtml}
+        </div>
+      </section>`;
   }
 
-  function esc(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
-
+  // --- Toggle handlers ---
   window.toggleCard = function(header) {
-    const card = header.parentElement;
-    card.classList.toggle('open');
+    header.parentElement.classList.toggle('open');
   };
 
-  window.toggleMonth = function(header) {
-    const section = header.parentElement;
-    const content = section.querySelector('.month-content');
+  window.toggleDate = function(header) {
+    const content = header.nextElementSibling;
     const icon = header.querySelector('.toggle-icon');
     content.classList.toggle('expanded');
     icon.classList.toggle('expanded');
   };
 
-  // Init
+  window.toggleCategory = function(header) {
+    const content = header.nextElementSibling;
+    const icon = header.querySelector('.toggle-icon');
+    content.classList.toggle('expanded');
+    icon.classList.toggle('expanded');
+  };
+
+  // --- Init ---
   renderNav();
-  renderChangelog();
-
-  // Intersection observer for fade-in
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.style.opacity = '1';
-          e.target.style.transform = 'translateY(0)';
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.feature-card').forEach(card => {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(12px)';
-      card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-      observer.observe(card);
-    });
-  }
+  renderMonth();
 })();
 </script>
 
