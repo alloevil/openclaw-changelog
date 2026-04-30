@@ -8080,7 +8080,7 @@ const CHANGELOG_DATA = [
       }).join('');
     }
 
-    // Multiple groups: render each as collapsible
+    // Multiple groups: render each as collapsible (skip wrapper for single-item groups)
     const expanded = dIdx === 0;
     return Array.from(groups.entries()).map(([comp, items]) => {
       const itemsHtml = items.map(f => {
@@ -8091,6 +8091,11 @@ const CHANGELOG_DATA = [
           <div class="feature-compact-detail">${esc(f.detail)}</div>
         </div>`;
       }).join('');
+
+      // Single item: render directly without collapsible header
+      if (items.length === 1) {
+        return itemsHtml;
+      }
 
       return `<div class="component-group">
         <div class="component-header" onclick="toggleComponent(this)">
