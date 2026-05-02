@@ -678,6 +678,19 @@ const CHANGELOG_DATA = [
     monthId: "2026-04",
     releases: [
       {
+        version: "v2026.4.29",
+        date: "2026-04-30",
+        features: [
+          { title: "NVIDIA provider 正式接入", tag: "新功能", summary: "NVIDIA provider with API-key onboarding, setup docs, static", detail: "Providers/NVIDIA: add the NVIDIA provider with API-key onboarding, setup docs, static catalog metadata, and literal model-ref picker support so NVIDIA hosted models can be selected with their provider prefix intact. (#71204) Thanks @eleqtrizit.", summaryZh: "正式接入 NVIDIA 模型提供商，支持 API Key 配置、静态目录和模型选择。" },
+          { title: "Memory 支持人物知识图谱", tag: "新功能", summary: "Agent-facing people wiki metadata, canonical aliases, person", detail: "Memory/wiki: add agent-facing people wiki metadata, canonical aliases, person cards, relationship graphs, privacy/provenance reports, evidence-kind drilldown, and search modes for person lookup, question routing, source evidence, and raw claims. Thanks @vincentkoc.", summaryZh: "Memory 升级为人物知识库，支持人物卡片、关系图谱、来源追溯与隐私报告。" },
+          { title: "消息队列默认启用 active-run steering", tag: "新功能", summary: "Default active-run queueing to steer with 500ms followup deb", detail: "Messages/queue: default active-run queueing to steer with a 500ms followup fallback debounce, and document the queue modes, precedence, and drop policies on the command queue page. Thanks @vincentkoc.", summaryZh: "消息队列默认启用 active-run steering 模式，支持 500ms 防抖，消息调度更智能。" },
+          { title: "Active Memory 支持按会话过滤", tag: "新功能", summary: "Optional per-conversation allowedChatIds and deniedChatIds f", detail: "Active Memory: add optional per-conversation allowedChatIds and deniedChatIds filters so operators can enable recall only for selected direct, group, or channel conversations while keeping broad sessions skipped. (#67977) Thanks @quengh.", summaryZh: "Active Memory 支持按会话设置白名单/黑名单，精准控制记忆召回范围。" },
+          { title: "安全扫描引入 OpenGrep", tag: "新功能", summary: "Precise OpenGrep rulepack, source-rule compiler, provenance m", detail: "Security/OpenGrep: add a precise OpenGrep rulepack, source-rule compiler, provenance metadata check, and PR/full scan workflows that validate first-party code and rulepack-only changes while uploading SARIF to GitHub Code Scanning. (#69483) Thanks @jesse-merhi.", summaryZh: "引入 OpenGrep 精确安全扫描规则，支持 SARIF 上报至 GitHub Code Scanning。" },
+          { title: "飞书跳过空白消息", tag: "修复", summary: "Skip empty-text messages that carry no media, so no blank us", detail: "Feishu: skip empty-text messages (e.g. {\"text\":\"\"}) that carry no media, so no blank user turn is written to the session and downstream LLM providers cannot reject the request with messages must not be empty. (#74634) Thanks @xdengli and @hclsys.", summaryZh: "飞书频道跳过无内容的空白消息，避免下游 LLM 报错。" },
+          { title: "Telegram 流式预览改用持久消息编辑", tag: "修复", summary: "Use durable message edits for streaming previews instead of n", detail: "Telegram: use durable message edits for streaming previews instead of native draft state, so generated replies no longer flicker through draft-to-message transitions that look like duplicates. (#75073) Thanks @obviyus.", summaryZh: "Telegram 流式预览改用消息编辑模式，避免草稿切换导致的闪烁和重复感。" },
+        ],
+      },
+      {
         version: "v2026.4.27",
         date: "2026-04-29",
         features: [
