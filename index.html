@@ -678,6 +678,27 @@ const CHANGELOG_DATA = [
     monthId: "2026-05",
     releases: [
       {
+      {
+        version: "v2026.5.3-1",
+        date: "2026-05-04",
+        features: [
+          { title: "Plugins/security 热修复", tag: "修复", summary: "修复安装扫描器错误拦截官方捆绑插件包的问题", detail: "修复安装扫描器在 process.env 访问和正常 API 调用出现在同一编译包中时，错误阻止官方捆绑插件包的问题。", summaryZh: "修复安装扫描器错误拦截官方捆绑插件包的问题" },
+        ],
+      },
+      {
+        version: "v2026.5.3",
+        date: "2026-05-04",
+        features: [
+          { title: "文件传输插件", tag: "新功能", summary: "新增内置文件传输插件，支持节点间二进制文件操作", detail: "新增 file_transfer 插件，提供 file_fetch、dir_list、dir_fetch、file_write 等 Agent 工具，支持配对节点间的二进制文件操作。默认采用按节点路径拒绝策略，支持操作员审批，拒绝符号链接遍历，单次传输上限 16MB。", summaryZh: "新增内置文件传输插件，支持节点间二进制文件操作" },
+          { title: "统一流式模式", tag: "新功能", summary: "新增 streaming.mode: "progress" 统一流式状态显示", detail: "在 Discord、Telegram、Matrix、Slack、Microsoft Teams 等渠道新增统一的 streaming.mode: "progress" 草稿模式，支持自动单字状态标签和共享进度配置。", summaryZh: "新增 streaming.mode: "progress" 统一流式状态显示" },
+          { title: "/steer 指令", tag: "新功能", summary: "新增 /steer 指令，无需新轮次即可引导当前会话", detail: "新增 /steer <message> 指令，可在不启动新轮次的情况下，对当前活跃会话进行队列无关的引导。同时新增 /side 作为 /btw 的别名。", summaryZh: "新增 /steer 指令，无需新轮次即可引导当前会话" },
+          { title: "Gateway 性能优化", tag: "新功能", summary: "延迟加载插件/运行时发现等模块，加快启动速度", detail: "通过延迟加载插件/运行时发现、Cron、Schema、Shutdown、Sessions 和模型元数据等模块，优化 Gateway 启动和 Control UI 热路径性能。", summaryZh: "延迟加载插件/运行时发现等模块，加快启动速度" },
+          { title: "渠道回复和投递改进", tag: "新功能", summary: "改进 Discord、WhatsApp、Telegram 等渠道的消息投递", detail: "改进 Discord 状态反应和降级传输报告，新增 WhatsApp Channel/Newsletter 目标支持，优化 Telegram、Feishu、Matrix、Microsoft Teams 和 Slack 的投递与恢复行为。", summaryZh: "改进 Discord、WhatsApp、Telegram 等渠道的消息投递" },
+          { title: "doctor --fix 增强", tag: "新功能", summary: "doctor --fix 即使存在无关验证问题也能提交安全迁移", detail: "doctor --fix 现在即使存在无关验证问题（如缺失插件）导致完整验证失败，也能提交安全的旧版迁移，确保 agents.defaults.llm 等已知旧版键始终被清理。", summaryZh: "doctor --fix 即使存在无关验证问题也能提交安全迁移" },
+          { title: "Gateway 配置安全加固", tag: "新功能", summary: "Gateway 启动和热重载不再自动恢复无效配置", detail: "Gateway 启动和热重载停止自动恢复无效配置，无效配置现在会直接失败，由 openclaw doctor --fix 负责修复最后已知的良好配置。", summaryZh: "Gateway 启动和热重载不再自动恢复无效配置" },
+          { title: "macOS LaunchAgent 修复", tag: "修复", summary: "修复 macOS LaunchAgent 升级失败问题", detail: "修复损坏的 macOS LaunchAgent 升级问题，在运行时加载前拒绝源码级插件包，并在更新和 doctor 运行期间修复过期的 Gateway/插件状态。", summaryZh: "修复 macOS LaunchAgent 升级失败问题" },
+        ],
+      },
         version: "v2026.5.2",
         date: "2026-05-02",
         features: [
