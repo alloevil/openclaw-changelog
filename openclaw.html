@@ -684,6 +684,49 @@ body {
  */
 const CHANGELOG_DATA = [
 {
+        version: "v2026.5.16-beta.1",
+        date: "2026-05-16",
+        features: [
+          { title: "CLI 多语言本地化", tag: "新功能", summary: "安装向导和频道设置流程支持英文、简体中文、繁体中文", detail: "CLI/onboarding: localize the setup wizard and bundled channel setup flows for English, Simplified Chinese, and Traditional Chinese. (#80645)", summaryZh: "安装向导和频道设置流程支持英/简中/繁中三语" },
+          { title: "Skills 缓存优化", tag: "优化", summary: "跨 warm gateway turns 缓存 resolvedSkills，按脱敏配置键复用，减少冗余快照重建", detail: "Agents/skills: cache hydrated resolvedSkills across warm gateway turns while keying reuse by the redacted effective config, reducing redundant skill snapshot rebuilds.", summaryZh: "跨 warm turns 缓存技能快照，减少冗余重建" },
+          { title: "Telegram 群聊安静模式", tag: "新功能", summary: "新增 room_event 模式：后台静默上下文运行，仅通过 message 工具可见发言", detail: "Telegram/group chat: add opt-in messages.groupChat.ambientTurns: \"room_event\" handling so always-on ambient chatter can run as quiet room context and speak visibly only via the message tool. (#81317)", summaryZh: "群聊新增安静 room_event 模式，后台静默+按需可见发言" },
+          { title: "Codex MCP Agent 作用域", tag: "新功能", summary: "MCP 服务支持 codex.agents 列表限定作用域 Agent，并支持 defaultToolsApprovalMode 配置", detail: "Codex app-server/MCP: scope user MCP servers to specific OpenClaw agent ids through an optional mcp.servers.<name>.codex.agents list and accept codex.defaultToolsApprovalMode.", summaryZh: "MCP 服务支持按 Agent 作用域限制和审批模式配置" },
+          { title: "媒体文件 MIME 欺骗防护", tag: "安全", summary: "对 input_file 字节进行嗅探验证，拒绝伪造的图片或 zip 载荷", detail: "Media/files: sniff input_file bytes before trusting declared MIME headers, rejecting spoofed image or zip payloads before they become agent-visible text.", summaryZh: "嗅探验证 input_file 字节，拒绝伪造 MIME 载荷" },
+          { title: "配置持久化容错", tag: "修复", summary: "忽略格式错误的 auth profile、cron 状态和会话存储条目，防止脏数据导致崩溃", detail: "Config persistence: ignore malformed array/scalar auth profile, cron job state, and session store entries instead of hydrating them into numeric profile ids, crashed cron rows, or invalid session records.", summaryZh: "忽略格式错误的配置条目，防止脏数据崩溃" },
+        ],
+      },
+{
+        version: "v2026.5.14-beta.2",
+        date: "2026-05-15",
+        features: [
+          { title: "Per-Agent 启动配置", tag: "新功能", summary: "支持 per-agent 覆盖 contextInjection、bootstrapMaxChars 等引导参数", detail: "Agents/config: support per-agent bootstrap profile overrides for contextInjection, bootstrapMaxChars, and bootstrapTotalMaxChars, inheriting from agents.defaults when omitted.", summaryZh: "支持 per-agent 自定义引导参数覆盖" },
+          { title: "Canvas 懒加载", tag: "优化", summary: "HTTP 主机、媒体解析器、CLI 实现和工具运行时按需加载，加速 Gateway 启动", detail: "Canvas: lazy-load HTTP host, hosted media resolver, CLI implementation, and tool runtime modules so Gateway startup only pays Canvas implementation cost on first use. (#82001)", summaryZh: "Canvas 模块按需加载，Gateway 启动更快" },
+          { title: "Codex Commentary 流式草稿", tag: "优化", summary: "Codex app-server 将 commentary preamble 流式写入可编辑的频道进度草稿", detail: "Codex app-server: stream commentary preambles into editable channel progress drafts without promoting them to final answers.", summaryZh: "Codex commentary 流式写入频道进度草稿" },
+          { title: "Codex CLI 迁移清理", tag: "优化", summary: "移除内置 codex-cli 后端，自动修复旧版 codex-cli/* 模型引用到 app-server 路由", detail: "Codex migration: remove the bundled codex-cli backend and repair legacy codex-cli/* model refs to the Codex app-server route.", summaryZh: "移除内置 codex-cli 后端，自动修复旧版模型引用" },
+          { title: "插件上下文预算暴露", tag: "新功能", summary: "llm_output 和 model_call hook 事件暴露 contextTokenBudget 及来源元数据", detail: "Plugins/hooks: expose the resolved effective contextTokenBudget plus source/reference metadata on llm_output and sanitized model_call_* hook events.", summaryZh: "hook 事件暴露上下文 token 预算及来源元数据" },
+          { title: "维护工具增强", tag: "优化", summary: "新增 codex-review 本地审查技能；CI 拦截 pnpm patch 依赖", detail: "Maintainer tooling: add a repo-local codex-review skill for Codex closeout reviews; fail CI when pull requests add package patch files or pnpm patched dependencies.", summaryZh: "新增本地审查技能；CI 拦截 patch 依赖" },
+        ],
+      },
+{
+        version: "v2026.5.12-beta.8",
+        date: "2026-05-14",
+        features: [
+          { title: "依赖外部化瘦身", tag: "优化", summary: "Bedrock/Slack/OpenShell/Anthropic Vertex 等插件依赖外置，仅安装所需组件", detail: "Amazon Bedrock: externalize the Bedrock and Bedrock Mantle provider packages; Plugins: externalize Slack, OpenShell sandbox, and Anthropic Vertex.", summaryZh: "Bedrock/Slack/Vertex 等插件依赖外置，仅安装所需" },
+          { title: "ACP Fallback 机制", tag: "新功能", summary: "新增 acp.fallbacks 配置，主后端不可用时自动尝试备用运行时", detail: "ACP: add acp.fallbacks so ACP turns can try configured backup runtime backends when the primary backend is unavailable.", summaryZh: "新增 acp.fallbacks，主后端不可用时自动切换备用" },
+          { title: "Control UI 自动滚动模式", tag: "新功能", summary: "新增持久化自动滚动选择器：保持/跟随流式/手动三种模式", detail: "Control UI/WebChat: add a persisted auto-scroll mode selector so users can keep the current near-bottom behavior, always follow streaming output, or use the New messages button manually.", summaryZh: "新增持久化自动滚动模式选择器，三种模式可选" },
+          { title: "Windows 沙箱凭证保护", tag: "安全", summary: "沙箱阻止 Windows USERPROFILE 绑定，防止 .codex/.openclaw/.ssh 等凭证目录泄漏", detail: "Security/sandbox: include Windows USERPROFILE in the sandbox blocked home roots so credential-bearing binds are denied even when HOME points at a different shell home.", summaryZh: "沙箱阻止 Windows USERPROFILE 绑定，防止凭证目录泄漏" },
+        ],
+      },
+{
+        version: "v2026.5.12-beta.7",
+        date: "2026-05-14",
+        features: [
+          { title: "Telegram 隔离轮询", tag: "优化", summary: "Bot API 轮询移至隔离 worker，主线程卡顿时保持消息接收", detail: "Telegram: keep Bot API polling alive during main event-loop stalls by moving ingress to an isolated worker with a durable local spool. (#81132)", summaryZh: "轮询移至隔离 worker，主线程卡顿不影响消息接收" },
+          { title: "会话历史序列化修复", tag: "修复", summary: "单调递增消息序列贯穿实时更新，过期序列输入触发 SSE 刷新", detail: "Gateway/session history: carry monotonic transcript message sequence through live updates and refresh SSE history when stale sequence input would otherwise append bad incremental state.", summaryZh: "消息序列单调递增，过期输入触发 SSE 刷新" },
+          { title: "Provider 环境变量安全加固", tag: "安全", summary: "不再从宽泛正则推断 provider 环境变量，仅通过结构化 SecretRef 解析", detail: "Models config/auth: stop inferring provider env-var markers from broad regex strings, and resolve config-backed provider apiKey values only through structured env SecretRefs.", summaryZh: "Provider 凭证仅通过结构化 SecretRef 解析，防止误匹配" },
+        ],
+      },
+{
         version: "v2026.5.14-beta.1",
         date: "2026-05-14",
         features: [
