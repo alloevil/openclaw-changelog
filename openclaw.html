@@ -684,6 +684,33 @@ body {
  */
 const CHANGELOG_DATA = [
 {
+        version: "v2026.5.16-beta.3",
+        date: "2026-05-16",
+        features: [
+          { title: "xAI Grok OAuth 登录", tag: "新功能", summary: "SuperGrok 订阅用户可通过 xAI 账号 OAuth 登录使用 Grok 模型，无需 API Key", detail: "Providers/xAI: add xAI Grok OAuth login for SuperGrok subscribers, letting xai/* models and xAI media/tool providers authenticate without XAI_API_KEY.", summaryZh: "SuperGrok 用户 OAuth 登录即可使用 Grok，无需 API Key" },
+          { title: "Cron 命令增强", tag: "新功能", summary: "openclaw cron run --wait 支持超时和轮询间隔控制，cron.runs --run-id 精确过滤", detail: "CLI/cron: add openclaw cron run --wait with timeout and poll interval controls, plus exact cron.runs --run-id filtering. (#81929)", summaryZh: "cron run --wait 支持超时/轮询控制，--run-id 精确过滤" },
+          { title: "安装向导三语本地化", tag: "新功能", summary: "安装向导和频道设置流程支持英文、简体中文、繁体中文", detail: "CLI/onboarding: localize the setup wizard and bundled channel setup flows for English, Simplified Chinese, and Traditional Chinese. (#80645)", summaryZh: "安装向导和频道设置支持英/简中/繁中三语" },
+          { title: "Telegram 群聊安静模式", tag: "新功能", summary: "新增 room_event 模式：后台静默上下文运行，仅通过 message 工具可见发言", detail: "Telegram/group chat: add opt-in messages.groupChat.ambientTurns: room_event handling. (#81317)", summaryZh: "群聊新增安静 room_event 模式，后台静默+按需可见发言" },
+          { title: "Gateway 重启追踪日志", tag: "优化", summary: "新增可选的重启信号、活跃任务排空、关闭、就绪等全链路追踪日志", detail: "Gateway: add opt-in restart trace logs for restart signal, active-work drain, close, next-start, ready, and memory spans. (#82396)", summaryZh: "新增可选的重启全链路追踪日志" },
+          { title: "Gateway 启动性能诊断", tag: "优化", summary: "分离 HTTP 监听与完整 Gateway 就绪计时，新增插件和 sidecar 诊断", detail: "Gateway/performance: split startup benchmark HTTP-listen timing from full gateway-ready timing and add post-bind plugin and sidecar diagnostics. (#82603)", summaryZh: "分离 HTTP 监听与 Gateway 就绪计时，新增诊断信息" },
+          { title: "多网关会话隔离", tag: "安全", summary: "按 agent id 限定会话数据查询范围，防止多 agent 网关状态跨泄漏", detail: "Gateway/sessions: scope session data lookups by agent id so multi-agent gateway state cannot cross-leak session records. (#81386)", summaryZh: "按 agent id 隔离会话数据，防止跨 agent 泄漏" },
+          { title: "Discord 重连修复", tag: "修复", summary: "延迟 identify 重试绑定到原始 socket 代，防止重连后识别错误 socket", detail: "Discord: bind delayed gateway identify retries to the originating socket generation. Fixes #82225.", summaryZh: "延迟 identify 重试绑定到原始 socket 代，防止重连后识别错误" },
+        ],
+      },
+{
+        version: "v2026.5.16-beta.2",
+        date: "2026-05-16",
+        features: [
+          { title: "xAI Grok OAuth 登录", tag: "新功能", summary: "SuperGrok 订阅用户可通过 xAI 账号 OAuth 登录使用 Grok 模型", detail: "Providers/xAI: add xAI Grok OAuth login for SuperGrok subscribers.", summaryZh: "SuperGrok 用户 OAuth 登录即可使用 Grok" },
+          { title: "Codex 上下文引擎线程绑定", tag: "优化", summary: "线程引导投影绑定到 Codex app-server 线程，投影状态变化时自动轮转", detail: "Codex/context engines: bind thread-bootstrap projection epochs to Codex app-server threads, carry redacted tool-result context into fresh threads. (#82351)", summaryZh: "投影绑定到 Codex 线程，状态变化时自动轮转" },
+          { title: "Telegram 重启消息恢复", tag: "修复", summary: "轮询更新在重启重放中持久化，排队的同话题消息恢复顺序", detail: "Telegram: persist polling updates through restart replay so queued same-topic messages resume in order. (#82256)", summaryZh: "重启后排队消息恢复顺序，不再丢失上下文" },
+          { title: "MCP 插件中断信号转发", tag: "修复", summary: "host MCP tools/call 的 AbortSignal 正确转发到插件 tool.execute，取消真正生效", detail: "MCP plugin tools: forward host MCP tools/call AbortSignal through createPluginToolsMcpHandlers into plugin tool.execute. Fixes #82424.", summaryZh: "AbortSignal 正确转发到插件，取消操作真正生效" },
+          { title: "Gmail 监听器关闭修复", tag: "修复", summary: "Gateway 关闭前中止 Gmail watcher 启动和热重载，防止关闭后生成 gog serve", detail: "Gateway/Gmail: abort in-flight Gmail watcher startup and hot-reload restarts before shutdown.", summaryZh: "Gateway 关闭前中止 Gmail watcher，防止关闭后泄漏进程" },
+          { title: "媒体 MIME 嗅探修复", tag: "安全", summary: "当字节嗅探为通用容器时忽略图片 MIME 提示，防止 zip/octet-stream 误标为图片", detail: "Media: ignore image MIME and filename hints when bytes sniff as generic containers, so zip/octet-stream payloads mislabeled as images do not become local image media.", summaryZh: "字节嗅探为通用容器时忽略 MIME 提示，防止 zip 误标为图片" },
+          { title: "ACP 运行时缓存刷新", tag: "修复", summary: "agent 配置变更后刷新缓存的运行时句柄，ACP 会话不再使用过期运行时", detail: "ACP/control plane: refresh cached runtime handles when agent config changes so ACP sessions stop using stale runtimes. Fixes #82237.", summaryZh: "agent 配置变更后刷新运行时缓存，ACP 不再使用过期运行时" },
+        ],
+      },
+{
         version: "v2026.5.16-beta.1",
         date: "2026-05-16",
         features: [

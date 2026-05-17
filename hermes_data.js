@@ -4,6 +4,98 @@ const RELEASES_DATA = [
     "id": "2026-05",
     "releases": [
       {
+        "version": "v2026.5.16",
+        "name": "Hermes Agent v0.14.0 (2026.5.16) — The Foundation Release",
+        "date": "2026-05-16",
+        "url": "https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.16",
+        "features": [
+          {
+            "title": "xAI Grok via SuperGrok OAuth + 1M 上下文窗口",
+            "tag": "新功能",
+            "summary": "SuperGrok 订阅用户 OAuth 登录即可使用 Grok，grok-4.3 上下文窗口提升至 100 万 token",
+            "detail": "If you pay for SuperGrok, you can now use Grok inside Hermes by signing in with your xAI account — no API key, no separate billing. The wire-through also bumps grok-4.3 to a 1M token context window.",
+            "summaryZh": "SuperGrok 用户 OAuth 登录使用 Grok，grok-4.3 上下文提升至 100 万 token"
+          },
+          {
+            "title": "OpenAI 兼容本地代理",
+            "tag": "新功能",
+            "summary": "hermes proxy 启动本地 OpenAI API 兼容端点，Claude Pro/ChatGPT Pro/SuperGrok 订阅可直接被 Codex/Aider/Cline 等工具调用",
+            "detail": "Run hermes proxy and you get a localhost endpoint that speaks the OpenAI API but is backed by whichever OAuth provider you're signed into. One subscription, every tool.",
+            "summaryZh": "hermes proxy 启动本地 OpenAI 兼容端点，一个订阅驱动所有工具"
+          },
+          {
+            "title": "x_search — X (Twitter) 一等公民搜索工具",
+            "tag": "新功能",
+            "summary": "内置 X 搜索工具，支持 OAuth 或 API Key 认证，无需安装 skill 即可搜索推文和话题",
+            "detail": "The agent can now search X directly without installing a skill. Search the timeline, find threads, surface specific posts. Auth with either your X OAuth login or an API key.",
+            "summaryZh": "内置 X 搜索工具，支持 OAuth/API Key，无需额外 skill"
+          },
+          {
+            "title": "Microsoft Teams 端到端集成",
+            "tag": "新功能",
+            "summary": "Teams 全栈接入：Graph 认证 + Webhook 监听 + Pipeline 运行时 + 出站消息，支持频道/DM/群组",
+            "detail": "The full Microsoft Graph stack lands together: auth + client foundation, a webhook listener, a pipeline plugin runtime, and outbound delivery. Chat from any Teams channel, DM, or group.",
+            "summaryZh": "Teams 全栈接入：Graph 认证 + Webhook + Pipeline + 出站消息"
+          },
+          {
+            "title": "安装瘦身浪潮",
+            "tag": "优化",
+            "summary": "重量级后端（Slack/Matrix/飞书/钉钉/图像生成/TTS 等）改为按需懒加载，pip install 一步到位",
+            "detail": "Heavyweight backends now lazy-install on first use. The [all] extras drop everything covered by lazy-deps, a tiered install falls back when a wheel rejects on your platform, and a supply-chain advisory checker scans every install.",
+            "summaryZh": "重量级后端改为按需懒加载，pip install 更轻更快"
+          },
+          {
+            "title": "跨会话 1 小时 Claude 提示缓存",
+            "tag": "优化",
+            "summary": "Claude 提示前缀缓存 1 小时跨会话复用，新会话首次响应更快更便宜",
+            "detail": "The prompt prefix (system prompt, skills, memory) now caches for an hour across sessions. Start a /new session and the first response comes back faster and cheaper because the cache is still warm.",
+            "summaryZh": "Claude 提示前缀缓存 1 小时跨会话复用，首次响应更快更省"
+          },
+          {
+            "title": "浏览器 CDP 调用提速 180 倍",
+            "tag": "优化",
+            "summary": "浏览器工具复用持久 Chrome 连接，页面检查和 JS 执行从秒级降至毫秒级",
+            "detail": "Browser CDP calls share one persistent connection to Chrome instead of spinning up a new DevTools session every time. Things that used to take seconds return in milliseconds.",
+            "summaryZh": "浏览器 CDP 复用持久连接，调用从秒级降至毫秒级"
+          },
+          {
+            "title": "冷启动优化 — 启动快约 19 秒",
+            "tag": "优化",
+            "summary": "启动路径大幅延迟加载，hermes tools 全平台屏幕从 14 秒降至 1.5 秒以内",
+            "detail": "Heavy adapters only load when you use them, model catalogs from disk cache first, doctor checks run in parallel, and chat -q skips the welcome banner entirely. hermes tools All-Platforms screen dropped from 14s to under 1.5s.",
+            "summaryZh": "启动路径延迟加载，hermes tools 全平台从 14 秒降至 1.5 秒"
+          },
+          {
+            "title": "2 个新消息平台 — LINE + SimpleX Chat",
+            "tag": "新功能",
+            "summary": "LINE（日韩台主流）和 SimpleX Chat（去中心化隐私通讯）接入，消息平台总数达 22 个",
+            "detail": "LINE is huge in Japan, Korea, and Taiwan, and now Hermes runs natively on the LINE Messaging API. SimpleX Chat is the privacy-focused decentralized messenger with no user IDs. 22 platforms total.",
+            "summaryZh": "LINE + SimpleX Chat 接入，消息平台总数达 22 个"
+          },
+          {
+            "title": "/handoff 实时会话转移",
+            "tag": "新功能",
+            "summary": "切换模型或人格时实时迁移完整会话上下文，不再丢失对话历史",
+            "detail": "/handoff moves your active session — every message, every tool call, every piece of context — to the target model, persona, or profile, live, without dropping anything.",
+            "summaryZh": "/handoff 实时迁移完整会话上下文，切换模型不丢失历史"
+          },
+          {
+            "title": "clarify 原生按钮 UI",
+            "tag": "优化",
+            "summary": "Telegram 和 Discord 上 clarify 多选问题显示原生按钮，点击即答，移动端体验大幅提升",
+            "detail": "When the agent uses the clarify tool to ask a multiple-choice question, it now shows real platform-native buttons on Telegram and Discord instead of asking you to type back the option number.",
+            "summaryZh": "Telegram/Discord clarify 显示原生按钮，点击即答"
+          },
+          {
+            "title": "LSP 语义诊断 + 视频生成 + computer_use CUA",
+            "tag": "新功能",
+            "summary": "每次写入自动 LSP 语义检查；统一可插拔 video_generate；computer_use 支持非 Anthropic provider",
+            "detail": "LSP semantic diagnostics on every write, a unified pluggable video_generate, a computer_use cua-driver backend that finally works with non-Anthropic providers.",
+            "summaryZh": "写入自动 LSP 诊断；统一 video_generate；computer_use 支持非 Anthropic provider"
+          }
+        ]
+      },
+      {
         "version": "v2026.5.7",
         "name": "Hermes Agent v0.13.0 (2026.5.7) — The Tenacity Release",
         "date": "2026-05-07",
