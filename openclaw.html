@@ -684,6 +684,48 @@ body {
  */
 const CHANGELOG_DATA = [
 {
+        version: "v2026.5.16-beta.6",
+        date: "2026-05-18",
+        features: [
+          { title: "Mac 应用设置重设计", tag: "优化", summary: "设置页面采用统一卡片布局、缓存导航，权限/语音/技能/Cron/Exec/Debug 面板更整洁", detail: "Mac app: redesign Settings pages with consistent card layouts, cached navigation, cleaner permissions/voice/skills/cron/exec/debug panes.", summaryZh: "设置页面全面重设计，卡片布局统一、导航缓存" },
+          { title: "浏览器对话框感知", tag: "新功能", summary: "快照中展示待处理和已处理的模态对话框，action 遇到对话框时返回 blockedByDialog，支持 dialog --dialog-id 应答", detail: "Browser: surface pending and recently handled modal dialogs in snapshots, return blockedByDialog when an action opens a modal.", summaryZh: "浏览器新增对话框感知，快照展示模态框并支持应答" },
+          { title: "插件开发框架增强", tag: "新功能", summary: "新增 defineToolPlugin + openclaw plugins build/validate/init，支持类型化简单工具插件和生成 manifest 元数据", detail: "CLI/plugins: add defineToolPlugin plus openclaw plugins build, validate, and init for typed simple tool plugins.", summaryZh: "新增 defineToolPlugin 和插件构建/验证/初始化命令" },
+          { title: "新技能：Python 调试", tag: "新功能", summary: "新增 Python 调试技能，支持 pdb、breakpoint()、post-mortem 和 debugpy 远程附加", detail: "Skills: add a Python debugging skill for pdb, breakpoint(), post-mortem inspection, and debugpy remote attach.", summaryZh: "新增 Python 调试技能，支持 pdb 和 debugpy" },
+          { title: "新技能：Meme 制作器", tag: "新功能", summary: "支持模板搜索、本地 SVG/PNG 渲染、Imgflip 托管渲染和 Know Your Meme 来源链接", detail: "Skills: add a meme-maker skill for curated template search, local SVG/PNG rendering, Imgflip hosted rendering.", summaryZh: "新增 Meme 制作技能，支持模板搜索和多格式渲染" },
+          { title: "HTTPS 正向代理支持", tag: "新功能", summary: "支持 HTTPS 托管正向代理端点和作用域 proxy.tls.caFile CA 信任", detail: "Proxy: support HTTPS managed forward-proxy endpoints and scoped proxy.tls.caFile CA trust for proxy endpoint TLS.", summaryZh: "新增 HTTPS 正向代理端点和 CA 信任配置" },
+          { title: "内置工具描述精简", tag: "优化", summary: "精简媒体、消息、会话、Cron、Gateway、Web 等内置工具描述和 schema 提示，保留路由守卫", detail: "Agents/tools: shorten built-in tool descriptions and schema hints across media, messaging, sessions, cron, Gateway, web tools.", summaryZh: "精简各内置工具描述和 schema 提示" },
+          { title: "Telegram 长轮询修复", tag: "修复", summary: "隔离长轮询低于 getUpdates 请求上限，防止空闲高 timeoutSeconds 的 bot 误断连重启循环", detail: "Telegram: keep isolated long polling below the hard getUpdates request guard so idle bot accounts do not false-disconnect.", summaryZh: "修复 Telegram 空闲 bot 长轮询误断连问题" },
+        ],
+      },
+{
+        version: "v2026.5.16-beta.5",
+        date: "2026-05-17",
+        features: [
+          { title: "Mac 应用设置重设计", tag: "优化", summary: "设置页面采用统一卡片布局、缓存导航，权限/语音/技能/Cron/Exec/Debug 面板更整洁", detail: "Mac app: redesign Settings pages with consistent card layouts, cached navigation, cleaner permissions/voice/skills/cron/exec/debug panes.", summaryZh: "设置页面全面重设计，卡片布局统一、导航缓存" },
+          { title: "Meme 制作器与新技能", tag: "新功能", summary: "新增 meme-maker、节点检查调试、融合图生成和临时 spike 工作流技能", detail: "Skills: add a meme-maker skill for curated template search, node inspector debugging, fused diagram generation, and throwaway spike workflow skills.", summaryZh: "新增 meme-maker、节点检查、融合图生成等多个技能" },
+          { title: "插件开发框架", tag: "新功能", summary: "新增 defineToolPlugin + openclaw plugins build/validate/init，支持类型化简单工具插件", detail: "CLI/plugins: add defineToolPlugin plus openclaw plugins build, validate, and init for typed simple tool plugins.", summaryZh: "新增 defineToolPlugin 和插件构建/验证/初始化命令" },
+          { title: "Python 调试技能", tag: "新功能", summary: "新增 Python 调试技能，支持 pdb、breakpoint()、post-mortem 和 debugpy 远程附加", detail: "Skills: add a Python debugging skill for pdb, breakpoint(), post-mortem inspection, and debugpy remote attach.", summaryZh: "新增 Python 调试技能" },
+          { title: "频道渲染器能力限制", tag: "优化", summary: "为频道渲染器添加展示能力限制，标记旧 interactive/Slack 指令 API 为弃用", detail: "Plugins/messages: add presentation capability limits for channel renderers and mark legacy APIs as deprecated.", summaryZh: "频道渲染器新增展示能力限制，弃用旧 API" },
+          { title: "HTTPS 正向代理支持", tag: "新功能", summary: "支持 HTTPS 托管正向代理端点和作用域 proxy.tls.caFile CA 信任", detail: "Proxy: support HTTPS managed forward-proxy endpoints and scoped proxy.tls.caFile CA trust.", summaryZh: "新增 HTTPS 正向代理端点支持" },
+          { title: "Obsidian 技能更新", tag: "优化", summary: "Obsidian 技能改为使用官方 obsidian CLI，不再依赖第三方 obsidian-cli", detail: "Skills: update the Obsidian skill to target the official obsidian CLI.", summaryZh: "Obsidian 技能切换到官方 CLI" },
+          { title: "QA-Lab 运行时对等测试", tag: "优化", summary: "新增首轮 20 轮和可选 100 轮运行时对等场景，支持标准和浸泡 QA 门控", detail: "QA-Lab: add first-hour 20-turn and optional 100-turn runtime parity scenarios with tier metadata.", summaryZh: "新增运行时对等测试场景和分层 QA 门控" },
+        ],
+      },
+{
+        version: "v2026.5.16-beta.4",
+        date: "2026-05-17",
+        features: [
+          { title: "安全审计抑制配置", tag: "新功能", summary: "新增 security.audit.suppressions 配置，可抑制已接受的审计发现，JSON 输出保留抑制通知", detail: "Security/audit: add security.audit.suppressions for intentionally accepted audit findings.", summaryZh: "新增审计抑制配置，已接受的发现不再出现在活跃摘要" },
+          { title: "子代理完成标记", tag: "优化", summary: "委派任务和子代理完成交接标记为待父级审查，要求请求方在确认完成前先审查结果", detail: "Agents/subagents: label delegated task and subagent completion handoffs as ready for parent review.", summaryZh: "子代理完成交接标记为待审查，防止未验证即完成" },
+          { title: "音乐生成提供商", tag: "新功能", summary: "新增 fal 和 OpenRouter 音乐生成提供商，支持 MiniMax/ACE/Stable Audio 和 Lyria 音频输出", detail: "Providers/media: add fal and OpenRouter music-generation providers for the shared music_generate tool.", summaryZh: "新增 fal 和 OpenRouter 音乐生成提供商" },
+          { title: "控制面板配额显示", tag: "优化", summary: "Overview 卡片和 Chat 头部显示提供商配额用量，恢复错过终端事件后的过期 Chat 状态", detail: "Control UI: show provider quota usage in the Overview card and Chat header.", summaryZh: "控制面板显示提供商配额用量" },
+          { title: "Mac 远程配置", tag: "新功能", summary: "openclaw-mac configure-remote 支持预配置远程 Gateway，支持 LAN/Tailnet 直连 URL", detail: "Mac app remote setup can now be preconfigured from openclaw-mac configure-remote, supports direct LAN/Tailnet gateway URLs.", summaryZh: "Mac 远程配置支持 LAN/Tailnet 直连" },
+          { title: "xAI Grok OAuth 登录", tag: "新功能", summary: "SuperGrok 订阅用户 OAuth 登录使用 Grok 模型，无需 API Key", detail: "Providers/xAI: add xAI Grok OAuth login for SuperGrok subscribers.", summaryZh: "SuperGrok 用户 OAuth 登录使用 Grok" },
+          { title: "Cron 命令增强", tag: "新功能", summary: "openclaw cron run --wait 支持超时和轮询间隔，cron.runs --run-id 精确过滤", detail: "CLI/cron: add openclaw cron run --wait with timeout and poll interval controls.", summaryZh: "cron run --wait 支持超时/轮询控制" },
+          { title: "异步媒体生成生命周期", tag: "优化", summary: "image_generate 通过异步媒体生成任务生命周期运行，支持任务状态、去重和消息工具完成交付", detail: "Agents/media: run image_generate through the shared async media-generation task lifecycle.", summaryZh: "图片生成统一为异步任务生命周期" },
+        ],
+      },
+{
         version: "v2026.5.16-beta.3",
         date: "2026-05-16",
         features: [
