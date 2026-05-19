@@ -684,6 +684,34 @@ body {
  */
 const CHANGELOG_DATA = [
 {
+        version: "v2026.5.19",
+        date: "2026-05-18",
+        features: [
+          { title: "插件开发框架正式上线", tag: "新功能", summary: "新增 defineToolPlugin + openclaw plugins build/validate/init，支持类型化简单工具插件和生成 manifest 元数据", detail: "CLI/plugins: add defineToolPlugin plus openclaw plugins build, validate, and init for typed simple tool plugins.", summaryZh: "新增 defineToolPlugin 和插件构建/验证/初始化命令" },
+          { title: "Android 实时语音 Talk Mode", tag: "新功能", summary: "Android Talk Mode 切换为实时 Gateway 中继语音会话，支持流式麦克风输入、实时音频播放和工具结果桥接", detail: "Android: switch Talk Mode to realtime Gateway relay voice sessions with streaming mic input and realtime audio playback.", summaryZh: "Android Talk Mode 升级为实时 Gateway 中继语音会话" },
+          { title: "浏览器对话框感知增强", tag: "新功能", summary: "快照中展示待处理和已处理的模态对话框，action 遇到对话框时返回 blockedByDialog，支持 dialog --dialog-id 应答", detail: "Browser: surface pending and recently handled modal dialogs in snapshots, return blockedByDialog when an action opens a modal.", summaryZh: "浏览器新增对话框感知，快照展示模态框并支持应答" },
+          { title: "新技能批量上线", tag: "新功能", summary: "新增 meme-maker、Python 调试、节点检查调试、融合图生成和临时 spike 工作流技能", detail: "Skills: add meme-maker, Python debugging, node inspector debugging, fused diagram generation, and throwaway spike workflow skills.", summaryZh: "批量新增 meme-maker、Python 调试、节点检查等多个技能" },
+          { title: "Mac 应用设置全面重设计", tag: "优化", summary: "设置页面采用统一卡片布局、缓存导航，权限/语音/技能/Cron/Exec/Debug 面板更整洁", detail: "Mac app: redesign Settings pages with consistent card layouts, cached navigation, cleaner permissions/voice/skills/cron/exec/debug panes.", summaryZh: "设置页面全面重设计，卡片布局统一、导航缓存" },
+          { title: "QA-Lab 运行时对等测试", tag: "优化", summary: "新增首轮 20 轮和可选 100 轮运行时对等场景，支持标准和浸泡 QA 门控，新增工具夹具覆盖率报告", detail: "QA-Lab: add first-hour 20-turn and optional 100-turn runtime parity scenarios with tier metadata and tool fixture coverage.", summaryZh: "新增运行时对等测试场景、分层 QA 门控和工具覆盖率报告" },
+          { title: "Memory 向量搜索性能修复", tag: "修复", summary: "JS 回退向量路径按有界 rowid 批次扫描并让出事件循环，大表不再阻塞主线程数秒", detail: "Memory/search: scan the JS-side fallback vector path in bounded rowid batches and yield to the event loop between batches.", summaryZh: "向量搜索按批次扫描并让出事件循环，修复大表阻塞主线程" },
+          { title: "Telegram DM 草稿预览", tag: "新功能", summary: "Telegram 支持白名单原生 DM 草稿预览用于工具进度展示，最终答案走正常持久化路径", detail: "Telegram: add allowlisted native DM draft previews for transient tool progress while keeping final answers on the normal persistent delivery path.", summaryZh: "Telegram DM 支持原生草稿预览展示工具进度" },
+        ],
+      },
+{
+        version: "v2026.5.18",
+        date: "2026-05-18",
+        features: [
+          { title: "Discord/OpenAI 实时语音修复", tag: "修复", summary: "修复 OpenAI 实时语音会话中后续轮次听不到的问题，预缓冲 assistant 播放避免卡顿开头", detail: "Discord/OpenAI: keep realtime Discord voice sessions hearing follow-up turns with OpenAI realtime and prebuffer assistant playback.", summaryZh: "修复 Discord 实时语音后续轮次无声和播放卡顿" },
+          { title: "图片元数据安全防护", tag: "安全", summary: "阻止对未识别图片字节调用外部解码器委托，回退链在真实处理错误后停止", detail: "Media: prevent image metadata probing from invoking external decoder delegates on unrecognized image bytes.", summaryZh: "阻止对未识别图片调用外部解码器，防止安全风险" },
+          { title: "Telegram 论坛话题媒体修复", tag: "修复", summary: "生成的媒体完成消息通过保留话题 ID 正确投递到 Telegram 论坛话题", detail: "Telegram: deliver generated media completions back into forum topics by preserving topic IDs across requester-agent handoff.", summaryZh: "修复生成媒体消息在 Telegram 论坛话题中丢失的问题" },
+          { title: "Gateway 更新检查延迟", tag: "优化", summary: "延迟更新检查到就绪后执行，不再阻塞 sidecar 就绪启动", detail: "Gateway: defer update-check startup until after readiness so package update checks no longer block sidecar-ready startup.", summaryZh: "更新检查延迟到就绪后，不再阻塞启动" },
+          { title: "xAI OAuth PKCE 兼容修复", tag: "修复", summary: "xAI token 端点交换时回显 PKCE challenge 字段，修复 xAI OAuth 兼容性", detail: "Plugins/xAI: echo PKCE challenge fields during OAuth authorization-code token exchange for xAI token-endpoint compatibility.", summaryZh: "修复 xAI OAuth PKCE token 交换兼容性" },
+          { title: "Codex 沙箱网络访问修复", tag: "修复", summary: "沙箱 Codex 代码模式轮次在 OpenClaw sandbox 允许出站时保留网络访问", detail: "Codex app-server: preserve network access for sandboxed Codex code-mode turns when the OpenClaw sandbox allows outbound egress.", summaryZh: "修复沙箱 Codex 代码模式网络访问被意外阻止" },
+          { title: "小米 MiMo 推理块兼容", tag: "修复", summary: "即使 OpenClaw thinking 禁用，也将 MiMo Anthropic 兼容 reasoning_content 重放为 thinking 块，修复 mimo-v2-flash 工具轮次", detail: "Providers/Xiaomi: replay MiMo Anthropic-compatible reasoning_content as thinking blocks even when thinking is disabled.", summaryZh: "修复 MiMo 模型在 thinking 禁用时工具轮次失败" },
+          { title: "执行审批凭证转发", tag: "修复", summary: "agent 拥有的 Gateway 审批调用时转发运行时凭证，已批准的异步命令不再因未认证后续调用而卡住", detail: "Agents/exec approvals: forward approval-runtime credentials on agent-owned Gateway approval calls.", summaryZh: "审批调用时转发运行时凭证，修复已批准命令卡住" },
+        ],
+      },
+{
         version: "v2026.5.16-beta.6",
         date: "2026-05-18",
         features: [
