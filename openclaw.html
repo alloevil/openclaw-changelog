@@ -684,6 +684,61 @@ body {
  */
 const CHANGELOG_DATA = [
 {
+        version: "v2026.5.19-alpha.1",
+        date: "2026-05-20",
+        features: [
+          { title: "Android 实时语音 Talk Mode", tag: "新功能", summary: "Android Talk Mode 切换为实时 Gateway 中继语音会话，支持流式麦克风输入、实时音频播放和工具结果桥接", detail: "Android: switch Talk Mode to realtime Gateway relay voice sessions with streaming mic input and realtime audio playback.", summaryZh: "Android Talk Mode 升级为实时 Gateway 中继语音会话" },
+          { title: "插件开发框架正式上线", tag: "新功能", summary: "新增 defineToolPlugin + openclaw plugins build/validate/init，支持类型化简单工具插件和生成 manifest 元数据", detail: "CLI/plugins: add defineToolPlugin plus openclaw plugins build, validate, and init for typed simple tool plugins.", summaryZh: "新增 defineToolPlugin 和插件构建/验证/初始化命令" },
+          { title: "QA-Lab 大规模扩展", tag: "新功能", summary: "新增运行时对等测试、工具覆盖率报告、个人代理审批拒绝/任务跟踪/安全共享等十余个新场景", detail: "QA-Lab: add runtime parity scenarios, tool fixture coverage, and personal-agent benchmark scenarios.", summaryZh: "新增十余个 QA-Lab 场景，覆盖对等测试、工具覆盖率和个人代理" },
+          { title: "Telegram 论坛话题全面修复", tag: "修复", summary: "修复论坛话题消息投递、序列化队列、回复目标上下文和热重载后轮询恢复等多个问题", detail: "Telegram: fix forum topic delivery, serialization, reply-target context, and hot-reload polling.", summaryZh: "修复 Telegram 论坛话题投递和序列化等多个问题" },
+          { title: "Codex 提示作用域隔离", tag: "优化", summary: "OpenClaw 提示按运行时表面作用域化，原生 Codex 保留自身人格指令，OpenClaw 仅贡献运行时上下文", detail: "Codex app-server: scope OpenClaw prompt guidance by runtime surface.", summaryZh: "Codex 提示按运行时表面隔离，避免干扰原生指令" },
+          { title: "Skills CLI 全局安装支持", tag: "新功能", summary: "openclaw skills install/update 新增 --global 参数，可安装共享管理技能", detail: "Skills CLI: allow openclaw skills install and update to target shared managed skills with --global.", summaryZh: "Skills CLI 支持 --global 安装共享管理技能" },
+          { title: "Memory 向量搜索性能修复", tag: "修复", summary: "JS 回退向量路径按有界 rowid 批次扫描并让出事件循环，大表不再阻塞主线程", detail: "Memory/search: scan the JS-side fallback vector path in bounded rowid batches and yield to the event loop.", summaryZh: "向量搜索按批次扫描并让出事件循环，修复大表阻塞主线程" },
+          { title: "Telegram DM 草稿预览", tag: "新功能", summary: "Telegram 支持白名单原生 DM 草稿预览用于工具进度展示，最终答案走正常持久化路径", detail: "Telegram: add allowlisted native DM draft previews for transient tool progress.", summaryZh: "Telegram DM 支持原生草稿预览展示工具进度" },
+        ],
+      },
+{
+        version: "v2026.5.19-beta.2",
+        date: "2026-05-19",
+        features: [
+          { title: "Docker/Podman APT 包构建参数", tag: "新功能", summary: "新增 OPENCLAW_IMAGE_APT_PACKAGES 作为运行时中立的镜像构建参数，支持额外 apt 包安装", detail: "Docker/Podman: add OPENCLAW_IMAGE_APT_PACKAGES as the runtime-neutral image build arg for extra apt packages.", summaryZh: "新增 OPENCLAW_IMAGE_APT_PACKAGES 镜像构建参数" },
+          { title: "Gateway 重启追踪成本归因", tag: "优化", summary: "ACPX 归因启动探针、配置、运行时和资源计数成本到重启追踪中，不影响就绪行为", detail: "Gateway/ACPX: attribute startup probe, config, runtime, and resource-count costs in restart traces.", summaryZh: "Gateway 重启追踪新增成本归因" },
+          { title: "Gateway 启动延迟优化", tag: "优化", summary: "启动日志和插件服务启动与 channel sidecar 并行，降低重启就绪延迟", detail: "Gateway: overlap startup logging and plugin-service startup with channel sidecars to reduce restart ready latency.", summaryZh: "Gateway 启动日志与 sidecar 并行，降低就绪延迟" },
+          { title: "依赖更新", tag: "优化", summary: "更新 @openclaw/proxyline 至 0.3.3，Pi 包至 0.75.1，最低 Node.js 22 版本提升至 22.19", detail: "Dependencies: update proxyline to 0.3.3, Pi packages to 0.75.1, raise minimum Node.js 22 to 22.19.", summaryZh: "依赖更新：proxyline 0.3.3、Pi 0.75.1、Node.js 最低 22.19" },
+        ],
+      },
+{
+        version: "v2026.5.19-beta.1",
+        date: "2026-05-18",
+        features: [
+          { title: "Admin HTTP RPC QR 登录支持", tag: "新功能", summary: "允许受信任的 Admin HTTP RPC 客户端启动并等待 Web QR 登录流程", detail: "Plugins/admin-http-rpc: allow trusted admin HTTP RPC clients to start and wait for web QR login flows.", summaryZh: "Admin HTTP RPC 支持 Web QR 登录流程" },
+          { title: "Mac 应用设置全面重设计", tag: "优化", summary: "设置页面采用统一卡片布局、缓存导航，权限/语音/技能/Cron/Exec/Debug 面板更整洁", detail: "Mac app: redesign Settings pages with consistent card layouts, cached navigation.", summaryZh: "设置页面全面重设计，卡片布局统一" },
+          { title: "新技能批量上线", tag: "新功能", summary: "新增 meme-maker、Python 调试、节点检查调试、融合图生成和临时 spike 工作流技能", detail: "Skills: add meme-maker, Python debugging, node inspector debugging, fused diagram generation skills.", summaryZh: "批量新增 meme-maker、Python 调试、节点检查等多个技能" },
+          { title: "浏览器对话框感知增强", tag: "新功能", summary: "快照中展示待处理和已处理的模态对话框，支持 dialog --dialog-id 应答", detail: "Browser: surface pending and recently handled modal dialogs in snapshots, allow dialog --dialog-id.", summaryZh: "浏览器新增对话框感知，快照展示模态框并支持应答" },
+          { title: "HTTPS 代理端点支持", tag: "新功能", summary: "支持 HTTPS 托管转发代理端点和作用域化 proxy.tls.caFile CA 信任", detail: "Proxy: support HTTPS managed forward-proxy endpoints and scoped proxy.tls.caFile CA trust.", summaryZh: "支持 HTTPS 托管转发代理和 CA 信任配置" },
+        ],
+      },
+{
+        version: "v2026.5.18-beta.1",
+        date: "2026-05-18",
+        features: [
+          { title: "插件消息呈现能力限制", tag: "优化", summary: "为 channel 渲染器添加呈现能力限制，废弃旧版 interactive/Slack 指令生产者 API", detail: "Plugins/messages: add presentation capability limits for channel renderers, deprecate legacy APIs.", summaryZh: "channel 渲染器新增呈现能力限制，废弃旧版 API" },
+          { title: "Gateway 重启就绪优化", tag: "优化", summary: "启动日志和插件服务启动与 channel sidecar 重叠执行，降低重启就绪延迟", detail: "Gateway: overlap startup logging and plugin-service startup with channel sidecars.", summaryZh: "Gateway 启动与 sidecar 并行，降低重启就绪延迟" },
+          { title: "QA-Lab 个人代理基准测试", tag: "新功能", summary: "新增审批拒绝场景和本地任务跟踪场景，验证拒绝读取和待处理/阻塞/完成状态报告", detail: "QA-Lab: add personal-agent approval-denial and local task followthrough scenarios.", summaryZh: "新增 QA-Lab 个人代理审批拒绝和任务跟踪场景" },
+          { title: "x_search 内置搜索工具", tag: "新功能", summary: "内置 X (Twitter) 搜索工具，支持 OAuth 或 API Key 认证，无需安装 skill", detail: "The agent can now search X directly without installing a skill.", summaryZh: "内置 X 搜索工具，支持 OAuth/API Key" },
+        ],
+      },
+{
+        version: "v2026.5.16-beta.7",
+        date: "2026-05-18",
+        features: [
+          { title: "Gateway 启动成本追踪", tag: "优化", summary: "ACPX 归因启动探针、配置、运行时和资源计数成本到重启追踪中", detail: "Gateway/ACPX: attribute startup probe, config, runtime, and resource-count costs in restart traces.", summaryZh: "Gateway 重启追踪新增成本归因" },
+          { title: "Mac 应用设置重设计续", tag: "优化", summary: "统一卡片布局、缓存导航，Mac SSH 隧道改为优先使用显式端点，保留旧版回环配置", detail: "Mac app: redesign Settings, prefer explicit Gateway endpoints over SSH tunnels.", summaryZh: "设置页面重设计续，优先显式端点" },
+          { title: "Node.js 22.19 最低版本", tag: "优化", summary: "Pi 包更新至 0.75.1，最低支持的 Node.js 22 行提升至 22.19", detail: "Dependencies: update Pi packages to 0.75.1 and raise the minimum supported Node.js 22 line to 22.19.", summaryZh: "Pi 0.75.1，Node.js 最低版本提升至 22.19" },
+          { title: "工具描述精简", tag: "优化", summary: "精简内置工具描述和 schema 提示，覆盖媒体/消息/会话/cron/Gateway/Web 等工具", detail: "Agents/tools: shorten built-in tool descriptions and schema hints.", summaryZh: "精简内置工具描述，减少 token 消耗" },
+        ],
+      },
+{
         version: "v2026.5.19",
         date: "2026-05-18",
         features: [
