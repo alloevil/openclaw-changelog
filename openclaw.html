@@ -684,6 +684,20 @@ body {
  */
 const CHANGELOG_DATA = [
 {
+        version: "v2026.5.20-beta.1",
+        date: "2026-05-21",
+        features: [
+          { title: "Discord 语音会话跟随用户", tag: "新功能", summary: "Discord 语音会话可跟随已配置用户进入语音频道，支持频道白名单、多用户交接、有界调和和 DAVE 恢复保留", detail: "Discord: let voice sessions follow configured Discord users into voice channels, with allowed-channel checks, multi-user handoff, bounded reconciliation, and DAVE recovery preservation.", summaryZh: "语音会话跟随用户进入语音频道，支持多用户交接和 DAVE 恢复" },
+          { title: "语音会话自动注入身份上下文", tag: "新功能", summary: "实时语音会话默认注入 IDENTITY.md、USER.md 和 SOUL.md 配置文件上下文，可通过 voice.realtime.bootstrapContextFiles 禁用", detail: "Discord/voice: include bounded IDENTITY.md, USER.md, and SOUL.md profile context in realtime voice session instructions by default.", summaryZh: "实时语音会话自动注入身份/用户/灵魂配置上下文" },
+          { title: "策略合规插件上线", tag: "新功能", summary: "新增 Policy 插件，支持基于策略的频道合规检查、doctor lint 发现和可选工作区修复", detail: "CLI/policy: add the bundled Policy plugin for policy-backed channel conformance checks, doctor lint findings, and opt-in workspace repair.", summaryZh: "新增 Policy 插件，支持频道合规检查和工作区修复" },
+          { title: "xAI 设备码 OAuth 登录", tag: "新功能", summary: "xAI 新增 device-code OAuth 登录，远程和无头环境无需 localhost 浏览器回调即可授权", detail: "Providers/xAI: add device-code OAuth login so remote and headless setups can authorize xAI without a localhost browser callback.", summaryZh: "xAI 新增 device-code OAuth，无头环境也能授权" },
+          { title: "单代理本地模型精简模式", tag: "新功能", summary: "新增 agents.list[].experimental.localModelLean 配置，可为单个代理启用精简本地模型模式而非全局设置", detail: "Agents/config: allow agents.list[].experimental.localModelLean so lean local-model mode can be enabled for one configured agent.", summaryZh: "支持为单个代理启用精简本地模型模式" },
+          { title: "OpenRouter 路由策略优化", tag: "优化", summary: "OpenRouter 请求遵循 provider-level params.provider 路由策略，模型和代理参数可覆盖默认值", detail: "Providers/OpenRouter: honor provider-level params.provider routing policy for OpenRouter requests.", summaryZh: "OpenRouter 遵循提供商级路由策略" },
+          { title: "浏览器截图限制遵循策略", tag: "修复", summary: "浏览器截图和标记快照遵循已配置的图片清理限制，与其他图片结果使用相同的缩放策略", detail: "Browser: honor the configured image sanitization limit for screenshots and labeled snapshots.", summaryZh: "浏览器截图和快照遵循图片清理限制策略" },
+          { title: "Cron 运行成功判定修复", tag: "修复", summary: "Cron 定时任务在尾部有工具警告但诊断无实质错误时，不再标记为失败，正确投递最终助手输出", detail: "Cron: deliver preferred final assistant output for successful scheduled runs when trailing plain tool warnings remain in diagnostics.", summaryZh: "修复 Cron 任务因尾部工具警告误判为失败的问题" },
+        ],
+      },
+{
         version: "v2026.5.19-alpha.1",
         date: "2026-05-20",
         features: [
