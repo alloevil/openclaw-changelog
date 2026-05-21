@@ -24,6 +24,16 @@
 
 从 GitHub Releases API 实时拉取数据，解析 release notes 中的 Highlights 章节并生成 HTML。
 
+## 公开反馈跟踪
+
+当某个 OpenClaw 版本需要公开发布跟进时，可以在人工审核后搭配 [TweetClaw](https://github.com/Xquik-dev/tweetclaw)。它是 OpenClaw 的 X/Twitter 自动化插件，可用于搜索 tweets 和 replies、监控版本讨论、发布已批准的更新帖，并继续跟踪后续回复。
+
+```bash
+openclaw plugins install @xquik/tweetclaw
+```
+
+[ClawHub 页面](https://clawhub.ai/plugins/@xquik/tweetclaw) 适合浏览插件信息，实际安装以 npm 包 `@xquik/tweetclaw` 为准。
+
 ## 访问
 
 本地打开 `index.html` 即可浏览。
